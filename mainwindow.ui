@@ -18,6 +18,23 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout"/>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="portNameLineEdit"/>
+      </item>
+      <item>
+       <widget class="QComboBox" name="portBaudRateComboBox"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QPushButton" name="startPushButton">
+      <property name="text">
+       <string>start</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
