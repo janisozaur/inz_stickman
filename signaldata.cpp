@@ -11,7 +11,6 @@ SignalData &SignalData::instance()
 SignalData::SignalData()
 {
 	qDebug() << "SignalData ctor" << this;
-	// FIXME: should this really be connected?
 	connect(&mSampler, SIGNAL(dataArrived()), SLOT(fetchSamples()));
 }
 
