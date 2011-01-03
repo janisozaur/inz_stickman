@@ -19,10 +19,15 @@ public:
 
 private slots:
 	void on_startPushButton_clicked();
+	void dataArrived();
 
 private:
 	Ui::MainWindow *ui;
 	GLWidget *mGLWidget;
+	int mTimerId;
+
+protected:
+	void timerEvent(QTimerEvent *);
 };
 
 #endif // MAINWINDOW_H

@@ -1,6 +1,7 @@
 #include "samplingthread.h"
 
 #include <QTimerEvent>
+#include <QMatrix4x4>
 #include <cmath>
 
 #include <QDebug>
@@ -145,7 +146,9 @@ void SamplingThread::append(const QByteArray &data, double elapsed)
 	for (int i = mPrevIndex; i < mPrevIndex + count; i++) {
 		Sample s = mSamples.at(i % SAMPLES_COUNT);
 		QVector3D v(s.x, s.y, s.z);
-		s.filteredPos = v;
+		QMatrix4x4 rot;
+		rot.rotate(60, 0, 0, 1);
+		s.filteredPos = v * rot;
 		// handle c++ stupid bug that could cause modulo result to be negative
 		int pIdx = (i + SAMPLES_COUNT - 2) % SAMPLES_COUNT;
 		QVector3D p = mFilteredSamples[pIdx].filteredPos;

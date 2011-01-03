@@ -148,6 +148,11 @@ void GLWidget::paintGL()
 	gluSphere(mQuadric, 4, 32, 32);
 
 	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(mPos.x(), mPos.y(), mPos.z());
+	gluSphere(mQuadric, 3, 5, 5);
+	glPopMatrix();
 }
 
 void GLWidget::timeout()
@@ -155,4 +160,9 @@ void GLWidget::timeout()
 	int elapsed = mTime.restart();
 	mRotation += (elapsed / (float)mUpdateTimer.interval()) * 2.0f;
 	mRotation = mRotation % 360;
+}
+
+void GLWidget::move(const QVector3D &pos)
+{
+	mPos = pos;
 }

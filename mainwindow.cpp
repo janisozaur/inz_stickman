@@ -75,4 +75,19 @@ void MainWindow::on_startPushButton_clicked()
 				ui->portBaudRateComboBox->currentIndex());
 	QPortSettings::BaudRate baud = (QPortSettings::BaudRate)baudVariant.toInt();
 	SignalData::instance().start(ui->portNameLineEdit->text(), baud);
+	mTimerId = this->startTimer(25);
+}
+
+void MainWindow::timerEvent(QTimerEvent *event)
+{
+	if (mTimerId == event->timerId()) {
+		dataArrived();
+	}
+}
+
+void MainWindow::dataArrived()
+{
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	pos.setY(-pos.y());
+	mGLWidget->move(pos);
 }
