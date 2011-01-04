@@ -97,20 +97,36 @@ void MainWindow::dataArrived()
 
 void MainWindow::on_rightNearPushButton_clicked()
 {
-	mGLWidget->setYellowNearPos(SignalData::instance().value(Yellow).filteredPos);
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	mGLWidget->setYellowNearPos(pos);
+	ui->rightNearXLcdNumber->display(pos.x());
+	ui->rightNearYLcdNumber->display(pos.y());
+	ui->rightNearZLcdNumber->display(pos.z());
 }
 
 void MainWindow::on_rightFarPushButton_clicked()
 {
-	mGLWidget->setYellowFarPos(SignalData::instance().value(Yellow).filteredPos);
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	mGLWidget->setYellowFarPos(pos);
+	ui->rightFarXLcdNumber->display(pos.x());
+	ui->rightFarYLcdNumber->display(pos.y());
+	ui->rightFarZLcdNumber->display(pos.z());
 }
 
 void MainWindow::on_leftNearPushButton_clicked()
 {
-	mGLWidget->setBlueNearPos(SignalData::instance().value(Blue).filteredPos);
+	QVector3D pos = SignalData::instance().value(Blue).filteredPos;
+	mGLWidget->setBlueNearPos(pos);
+	ui->leftNearXLcdNumber->display(pos.x());
+	ui->leftNearYLcdNumber->display(pos.y());
+	ui->leftNearZLcdNumber->display(pos.z());
 }
 
 void MainWindow::on_leftFarPushButton_clicked()
 {
-	mGLWidget->setBlueFarPos(SignalData::instance().value(Blue).filteredPos);
+	QVector3D pos = SignalData::instance().value(Blue).filteredPos;
+	mGLWidget->setBlueFarPos(pos);
+	ui->leftFarXLcdNumber->display(pos.x());
+	ui->leftFarYLcdNumber->display(pos.y());
+	ui->leftFarZLcdNumber->display(pos.z());
 }
