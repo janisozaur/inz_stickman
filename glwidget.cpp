@@ -1,6 +1,10 @@
 #include "glwidget.h"
 
+#include <cmath>
+
 #include <QDebug>
+
+#define PI 3.14159265
 
 GLWidget::GLWidget(QWidget *parent) :
 	QGLWidget(parent),
@@ -111,6 +115,10 @@ void GLWidget::paintGL()
 
 	// one arm
 	glPushMatrix();
+	glRotatef(90, 1, 0, 0);
+	if (!std::isnan(mDegrees)) {
+		glRotatef(mDegrees, 1, 0, 0);
+	}
 	glRotatef(90, 0, 1, 0);
 	glTranslatef(0, 0, 3);
 	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
@@ -154,6 +162,17 @@ void GLWidget::timeout()
 	int elapsed = mTime.restart();
 	mRotation += (elapsed / (float)mUpdateTimer.interval()) * 2.0f;
 	mRotation = mRotation % 360;
+
+	float y = mPos.z() - mYellowNearPos.z();
+	QVector3D pos = mPos;
+	pos.setX(mYellowNearPos.x());
+	float l = (pos - mYellowNearPos).length();
+	mDegrees = 360 * asin(y / l) * M_1_PI / 2;
+	static int count = 0;
+	if (count++ == 20) {
+		qDebug() << "degrees" << mDegrees;
+		count = 0;
+	}
 }
 
 void GLWidget::move(const QVector3D &pos)

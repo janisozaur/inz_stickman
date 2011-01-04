@@ -37,6 +37,7 @@ private:
 	QTimer mUpdateTimer;
 	QVector3D mPos;
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
+	float mDegrees;
 
 protected:
 	void initializeGL();
