@@ -125,12 +125,6 @@ void GLWidget::paintGL()
 
 	// other arm
 	glPushMatrix();
-	glTranslatef(-1.5, 0, 9);
-	gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
-	glPopMatrix();
-
-	// one arm
-	glPushMatrix();
 	glRotatef(-90, 0, 1, 0);
 	glTranslatef(0, 0, 3);
 	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
