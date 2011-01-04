@@ -166,3 +166,43 @@ void GLWidget::move(const QVector3D &pos)
 {
 	mPos = pos;
 }
+
+void GLWidget::setYellowNearPos(const QVector3D &pos)
+{
+	mYellowNearPos = pos;
+}
+
+void GLWidget::setYellowFarPos(const QVector3D &pos)
+{
+	mYellowFarPos = pos;
+}
+
+void GLWidget::setBlueNearPos(const QVector3D &pos)
+{
+	mBlueNearPos = pos;
+}
+
+void GLWidget::setBlueFarPos(const QVector3D &pos)
+{
+	mBlueFarPos = pos;
+}
+
+QVector3D GLWidget::yellowNearPos() const
+{
+	return mYellowNearPos;
+}
+
+QVector3D GLWidget::yellowFarPos() const
+{
+	return mYellowFarPos;
+}
+
+QVector3D GLWidget::blueNearPos() const
+{
+	return mBlueNearPos;
+}
+
+QVector3D GLWidget::blueFarPos() const
+{
+	return mBlueFarPos;
+}

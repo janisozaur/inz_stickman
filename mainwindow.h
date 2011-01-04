@@ -21,6 +21,14 @@ private slots:
 	void on_startPushButton_clicked();
 	void dataArrived();
 
+	void on_rightNearPushButton_clicked();
+
+	void on_rightFarPushButton_clicked();
+
+	void on_leftNearPushButton_clicked();
+
+	void on_leftFarPushButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	GLWidget *mGLWidget;

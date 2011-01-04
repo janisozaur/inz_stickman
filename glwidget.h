@@ -13,6 +13,14 @@ public:
 	explicit GLWidget(QWidget *parent = 0);
 	~GLWidget();
 	void move(const QVector3D &pos);
+	void setYellowNearPos(const QVector3D &pos);
+	void setYellowFarPos(const QVector3D &pos);
+	void setBlueNearPos(const QVector3D &pos);
+	void setBlueFarPos(const QVector3D &pos);
+	QVector3D yellowNearPos() const;
+	QVector3D yellowFarPos() const;
+	QVector3D blueNearPos() const;
+	QVector3D blueFarPos() const;
 
 signals:
 
@@ -28,6 +36,7 @@ private:
 	QTime mTime;
 	QTimer mUpdateTimer;
 	QVector3D mPos;
+	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 
 protected:
 	void initializeGL();

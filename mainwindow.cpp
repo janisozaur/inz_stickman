@@ -5,6 +5,8 @@
 
 #include <QSerialPort>
 
+#include <QDebug>
+
 using namespace TNX;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -90,4 +92,25 @@ void MainWindow::dataArrived()
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
 	pos.setY(-pos.y());
 	mGLWidget->move(pos);
+	qDebug() << pos;
+}
+
+void MainWindow::on_rightNearPushButton_clicked()
+{
+	mGLWidget->setYellowNearPos(SignalData::instance().value(Yellow).filteredPos);
+}
+
+void MainWindow::on_rightFarPushButton_clicked()
+{
+	mGLWidget->setYellowFarPos(SignalData::instance().value(Yellow).filteredPos);
+}
+
+void MainWindow::on_leftNearPushButton_clicked()
+{
+	mGLWidget->setBlueNearPos(SignalData::instance().value(Blue).filteredPos);
+}
+
+void MainWindow::on_leftFarPushButton_clicked()
+{
+	mGLWidget->setBlueFarPos(SignalData::instance().value(Blue).filteredPos);
 }
