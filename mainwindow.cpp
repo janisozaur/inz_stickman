@@ -90,7 +90,7 @@ void MainWindow::timerEvent(QTimerEvent *event)
 void MainWindow::dataArrived()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	pos.setY(-pos.y());
+	//pos.setY(-pos.y());
 	mGLWidget->move(pos);
 	static int count = 0;
 	if (count++ == 20) {
