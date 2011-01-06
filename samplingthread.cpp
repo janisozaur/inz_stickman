@@ -130,8 +130,9 @@ void SamplingThread::append(const QByteArray &data, double elapsed)
 		float y = ((pow(mySample.left, 2) - pow(mySample.up, 2) + pow(i, 2) + pow(j, 2)) / (2 * j)) - ((i * x) / j);
 		float z = sqrt(pow(mySample.left, 2) - pow(x, 2) - pow(y, 2));
 
-		mySample.x = x;
-		mySample.y = y;
+		// make the coordinate system relative to user
+		mySample.x = -x;
+		mySample.y = -y;
 		mySample.z = z;
 
 		//qDebug() << mTempData.left(8).toHex();
