@@ -21,6 +21,10 @@ public:
 	QVector3D yellowFarPos() const;
 	QVector3D blueNearPos() const;
 	QVector3D blueFarPos() const;
+	void calibrateRightFront(const QVector3D &pos);
+	void calibrateRightRight(const QVector3D &pos);
+	void calibrateRightZero(const QVector3D &pos);
+	void calibrateRightGo();
 
 signals:
 
@@ -37,6 +41,7 @@ private:
 	QTimer mUpdateTimer;
 	QVector3D mPos;
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
+	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mDegrees;
 
 protected:

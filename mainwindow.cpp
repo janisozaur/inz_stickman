@@ -94,7 +94,7 @@ void MainWindow::dataArrived()
 	mGLWidget->move(pos);
 	static int count = 0;
 	if (count++ == 20) {
-		qDebug() << "pos:" << pos;
+		//qDebug() << "pos:" << pos;
 		count = 0;
 	}
 }
@@ -133,4 +133,27 @@ void MainWindow::on_leftFarPushButton_clicked()
 	ui->leftFarXLcdNumber->display(pos.x());
 	ui->leftFarYLcdNumber->display(pos.y());
 	ui->leftFarZLcdNumber->display(pos.z());
+}
+
+void MainWindow::on_rightFrontPushButton_clicked()
+{
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	mGLWidget->calibrateRightFront(pos);
+}
+
+void MainWindow::on_rightZeroPushButton_clicked()
+{
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	mGLWidget->calibrateRightZero(pos);
+}
+
+void MainWindow::on_rightRightPushButton_clicked()
+{
+	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	mGLWidget->calibrateRightRight(pos);
+}
+
+void MainWindow::on_rightCalibratePushButton_clicked()
+{
+	mGLWidget->calibrateRightGo();
 }

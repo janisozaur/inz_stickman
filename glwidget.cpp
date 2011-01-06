@@ -1,6 +1,7 @@
 #include "glwidget.h"
 
 #include <cmath>
+#include <QMatrix4x4>
 
 #include <QDebug>
 
@@ -198,7 +199,7 @@ void GLWidget::timeout()
 	mDegrees = 360 * asin(y / l) * M_1_PI / 2;
 	static int count = 0;
 	if (count++ == 20) {
-		qDebug() << "degrees" << mDegrees;
+		//qDebug() << "degrees" << mDegrees;
 		count = 0;
 	}
 }
@@ -250,4 +251,66 @@ QVector3D GLWidget::blueNearPos() const
 QVector3D GLWidget::blueFarPos() const
 {
 	return mBlueFarPos;
+}
+
+void GLWidget::calibrateRightFront(const QVector3D &pos)
+{
+	mRightFrontPos = pos;
+	qDebug() << "set right front pos to" << pos;
+}
+
+void GLWidget::calibrateRightRight(const QVector3D &pos)
+{
+	mRightRightPos = pos;
+	qDebug() << "set right right pos to" << pos;
+}
+
+void GLWidget::calibrateRightZero(const QVector3D &pos)
+{
+	mRightZeroPos = pos;
+	qDebug() << "set right zero pos to" << pos;
+}
+
+void GLWidget::calibrateRightGo()
+{
+	//mRightFrontPos = QVector3D(-15.2956, 22.7808, 74.4234);
+	//mRightRightPos = QVector3D(40.0147, -26.0087, 75.293);
+	//mRightZeroPos = QVector3D(52.4254, 29.1463, 35.6232);
+	qDebug() << "mRightFrontPos" << mRightFrontPos;
+	qDebug() << "mRightRightPos" << mRightRightPos;
+	qDebug() << "mRightZeroPos" << mRightZeroPos;
+
+	float xRot, yRot;
+
+	QVector3D d = mRightRightPos - mRightFrontPos;
+	QMatrix4x4 rotationX, rotationY;
+
+	// plane's normal vector
+	QVector3D n = QVector3D::crossProduct(mRightFrontPos - mRightZeroPos, mRightRightPos - mRightZeroPos);
+	n.normalize();
+
+	QVector3D nx = n;
+	nx.setX(0);
+	xRot = acos(nx.z() / nx.length());
+	xRot *= sign(n.y()) * 360 * M_1_PI / 2;
+	rotationX.rotate(xRot, 1, 0, 0);
+
+	qDebug() << "normal:" << n;
+
+	QVector3D rotatedN = rotationX * n;
+	qDebug() << "rotated normal:" << rotatedN;
+
+	yRot = acos(rotatedN.z() / rotatedN.length());
+	yRot *= sign(rotatedN.x()) * -360 * M_1_PI / 2;
+	rotationY.rotate(yRot, 0, 1, 0);
+
+	rotatedN = rotationY * rotatedN;
+	qDebug() << "rotated normal:" << rotatedN;
+
+	QMatrix4x4 transform = rotationY * rotationX;
+
+	qDebug() << "rotation:" << xRot << yRot;
+	qDebug() << "rotated mRightFrontPos:" << transform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << transform * mRightRightPos;
+	qDebug() << "rotated diagon:" << transform * d;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
-    <height>451</height>
+    <width>790</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
       </property>
@@ -96,6 +96,34 @@
            </item>
           </layout>
          </item>
+         <item>
+          <widget class="QPushButton" name="leftFrontPushButton">
+           <property name="text">
+            <string>Left Front</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="leftLeftPushButton">
+           <property name="text">
+            <string>Left Left</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="leftZeroPushButton">
+           <property name="text">
+            <string>Left Zero</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="leftCalibratePushButton">
+           <property name="text">
+            <string>Calibrate</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -151,6 +179,34 @@
            </item>
           </layout>
          </item>
+         <item>
+          <widget class="QPushButton" name="rightFrontPushButton">
+           <property name="text">
+            <string>Right Front</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="rightRightPushButton">
+           <property name="text">
+            <string>Right Right</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="rightZeroPushButton">
+           <property name="text">
+            <string>Right Zero</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="rightCalibratePushButton">
+           <property name="text">
+            <string>Calibrate</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>
@@ -163,7 +219,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>667</width>
+     <width>790</width>
      <height>25</height>
     </rect>
    </property>
