@@ -6,6 +6,34 @@
 
 #define PI 3.14159265
 
+inline int fuzzySign(double d)
+{
+	int sign;
+	if (qFuzzyIsNull(d)) {
+		sign = 0;
+	} else if (d > 0) {
+		sign = 1;
+	} else {
+		sign = -1;
+	}
+	qDebug() << "fuzzy sign of" << d << "is" << sign;
+	return sign;
+}
+
+inline int sign(double d)
+{
+	int sign;
+	if (d == 0) {
+		sign = 0;
+	} else if (d > 0) {
+		sign = 1;
+	} else {
+		sign = -1;
+	}
+	qDebug() << "sign of" << d << "is" << sign;
+	return sign;
+}
+
 GLWidget::GLWidget(QWidget *parent) :
 	QGLWidget(parent),
 	mQuadric(gluNewQuadric()),
