@@ -328,7 +328,7 @@ void GLWidget::calibrateRightGo()
 	qDebug() << "rotated normal:" << rotatedN;
 
 	yRot = acos(rotatedN.z() / rotatedN.length());
-	yRot *= sign(rotatedN.x()) * 360 * M_1_PI / 2;
+	yRot *= sign(rotatedN.x()) * -360 * M_1_PI / 2;
 	rotationY.rotate(yRot, 0, 1, 0);
 
 	rotatedN = rotationY * rotatedN;
