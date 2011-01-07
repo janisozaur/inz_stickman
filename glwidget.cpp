@@ -183,6 +183,29 @@ void GLWidget::paintGL()
 	glTranslatef(mPos.x(), mPos.y(), mPos.z());
 	gluSphere(mQuadric, 3, 5, 5);
 	glPopMatrix();
+
+	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
+	xAxis = mTransform * xAxis;
+	yAxis = mTransform * yAxis;
+	zAxis = mTransform * zAxis;
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glBegin(GL_LINES);
+		glColor3f(1, 0, 0);
+		glVertex3f(0, 0, 0);
+		glVertex3f(xAxis.x(), xAxis.y(), xAxis.z());
+
+		glColor3f(0, 1, 0);
+		glVertex3f(0, 0, 0);
+		glVertex3f(yAxis.x(), yAxis.y(), yAxis.z());
+
+		glColor3f(0, 0, 1);
+		glVertex3f(0, 0, 0);
+		glVertex3f(zAxis.x(), zAxis.y(), zAxis.z());
+	glEnd();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 }
 
 void GLWidget::timeout()
@@ -327,6 +350,16 @@ void GLWidget::calibrateRightGo()
 	d = mTransform * d;
 	d.normalize();
 	qDebug() << d << qFuzzyIsNull(d.y());
+
+	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
+	xAxis = mTransform * xAxis;
+	yAxis = mTransform * yAxis;
+	zAxis = mTransform * zAxis;
+
+	qDebug() << "new coordinate system:" << endl
+			 << "\t" << xAxis << endl
+			 << "\t" << yAxis << endl
+			 << "\t" << zAxis << endl;
 }
 
 void GLWidget::toggleDebugEnable(bool enabled)
