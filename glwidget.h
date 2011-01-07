@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QVector3D>
+#include <QMatrix4x4>
 
 class GLWidget : public QGLWidget
 {
@@ -43,6 +44,7 @@ private:
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mDegrees;
+	QMatrix4x4 mTransform;
 
 protected:
 	void initializeGL();

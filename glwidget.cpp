@@ -1,7 +1,6 @@
 #include "glwidget.h"
 
 #include <cmath>
-#include <QMatrix4x4>
 
 #include <QDebug>
 
@@ -206,7 +205,7 @@ void GLWidget::timeout()
 
 void GLWidget::move(const QVector3D &pos)
 {
-	mPos = pos;
+	mPos = mTransform * pos;
 }
 
 void GLWidget::setYellowNearPos(const QVector3D &pos)
@@ -283,7 +282,7 @@ void GLWidget::calibrateRightGo()
 	float xRot, yRot;
 
 	QVector3D d = mRightRightPos - mRightFrontPos;
-	QMatrix4x4 rotationX, rotationY;
+	QMatrix4x4 rotationX, rotationY, tempMatrix;
 
 	// plane's normal vector
 	QVector3D n = QVector3D::crossProduct(mRightFrontPos - mRightZeroPos, mRightRightPos - mRightZeroPos);
@@ -307,10 +306,20 @@ void GLWidget::calibrateRightGo()
 	rotatedN = rotationY * rotatedN;
 	qDebug() << "rotated normal:" << rotatedN;
 
-	QMatrix4x4 transform = rotationY * rotationX;
+	mTransform = rotationY * rotationX;
+
+	qDebug() << "rotated diagon:" << mTransform * d;
+
+	// rotate everything to XZ plane (from XY)
+	tempMatrix.rotate(90, 1, 0, 0);
+	mTransform = tempMatrix * mTransform;
 
 	qDebug() << "rotation:" << xRot << yRot;
-	qDebug() << "rotated mRightFrontPos:" << transform * mRightFrontPos;
-	qDebug() << "rotated mRightRightPos:" << transform * mRightRightPos;
-	qDebug() << "rotated diagon:" << transform * d;
+	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
+	qDebug() << "rotated diagon:" << mTransform * d;
+
+	d = mTransform * d;
+	d.normalize();
+	qDebug() << d << qFuzzyIsNull(d.y());
 }
