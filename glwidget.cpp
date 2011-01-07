@@ -188,20 +188,21 @@ void GLWidget::paintGL()
 	xAxis = mTransform * xAxis;
 	yAxis = mTransform * yAxis;
 	zAxis = mTransform * zAxis;
+	QVector3D zero = mTransform * QVector3D();
 
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
 	glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
-		glVertex3f(0, 0, 0);
+		glVertex3f(zero.x(), zero.y(), zero.z());
 		glVertex3f(xAxis.x(), xAxis.y(), xAxis.z());
 
 		glColor3f(0, 1, 0);
-		glVertex3f(0, 0, 0);
+		glVertex3f(zero.x(), zero.y(), zero.z());
 		glVertex3f(yAxis.x(), yAxis.y(), yAxis.z());
 
 		glColor3f(0, 0, 1);
-		glVertex3f(0, 0, 0);
+		glVertex3f(zero.x(), zero.y(), zero.z());
 		glVertex3f(zAxis.x(), zAxis.y(), zAxis.z());
 	glEnd();
 	glEnable(GL_DEPTH_TEST);
