@@ -300,9 +300,9 @@ void GLWidget::calibrateRightZero(const QVector3D &pos)
 
 void GLWidget::calibrateRightGo()
 {
-	//mRightFrontPos = QVector3D(-15.2956, 22.7808, 74.4234);
-	//mRightRightPos = QVector3D(40.0147, -26.0087, 75.293);
-	//mRightZeroPos = QVector3D(52.4254, 29.1463, 35.6232);
+	//mRightFrontPos = QVector3D(-32.0761, 7.20789, -62.2479);
+	//mRightRightPos = QVector3D(29.4606, -70.0331, -57.7565);
+	//mRightZeroPos = QVector3D(32.4791, 9.469, -69.7508);
 	qDebug() << "mRightFrontPos" << mRightFrontPos;
 	qDebug() << "mRightRightPos" << mRightRightPos;
 	qDebug() << "mRightZeroPos" << mRightZeroPos;
@@ -342,14 +342,23 @@ void GLWidget::calibrateRightGo()
 	tempMatrix.rotate(90, 1, 0, 0);
 	mTransform = tempMatrix * mTransform;
 
+	d.normalize();
+	float cosVal = (mTransform * d).x();
+	yRot = acos(cosVal) * 360 * M_1_PI / 2;
+	yRot += 45;
+	yRot *= -sign(d.x());
+	tempMatrix = QMatrix4x4();
+	tempMatrix.rotate(yRot, 0, 1, 0);
+	mTransform = tempMatrix * mTransform;
+
+	d = mTransform * d;
+
 	qDebug() << "rotation:" << xRot << yRot;
 	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
 	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
-	qDebug() << "rotated diagon:" << mTransform * d;
+	qDebug() << "rotated diagon:" << d;
+	qDebug() << yRot << d << qFuzzyIsNull(d.y());
 
-	d = mTransform * d;
-	d.normalize();
-	qDebug() << d << qFuzzyIsNull(d.y());
 
 	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
 	xAxis = mTransform * xAxis;
