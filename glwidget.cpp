@@ -356,6 +356,7 @@ void GLWidget::calibrateRightGo()
 	qDebug() << "rotation:" << xRot << yRot;
 	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
 	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
 	qDebug() << "rotated diagon:" << d;
 	qDebug() << yRot << d << qFuzzyIsNull(d.y());
 
@@ -369,6 +370,15 @@ void GLWidget::calibrateRightGo()
 			 << "\t" << xAxis << endl
 			 << "\t" << yAxis << endl
 			 << "\t" << zAxis << endl;
+
+	QVector3D translation = mTransform * -mRightZeroPos;
+	QMatrix4x4 translationMatrix;
+	translationMatrix.translate(translation);
+	mTransform = translationMatrix * mTransform;
+
+	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
 }
 
 void GLWidget::toggleDebugEnable(bool enabled)
