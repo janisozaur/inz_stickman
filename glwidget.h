@@ -31,6 +31,8 @@ signals:
 
 public slots:
 	void timeout();
+	void toggleDebugEnable(bool enabled);
+	void setDebugInterval(int interval);
 
 private:
 	GLfloat *light_ambient, *light_ambient_position, *whiteDiffuseLight,
@@ -45,6 +47,8 @@ private:
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mDegrees;
 	QMatrix4x4 mTransform;
+	int mDebugInterval;
+	bool mDebugEnabled;
 
 protected:
 	void initializeGL();

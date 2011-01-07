@@ -206,6 +206,11 @@ void GLWidget::timeout()
 void GLWidget::move(const QVector3D &pos)
 {
 	mPos = mTransform * pos;
+	static int count = 0;
+	if (mDebugEnabled && count++ >= mDebugInterval) {
+		qDebug() << "pos:" << pos << "transformed:" << mPos;
+		count = 0;
+	}
 }
 
 void GLWidget::setYellowNearPos(const QVector3D &pos)
@@ -322,4 +327,16 @@ void GLWidget::calibrateRightGo()
 	d = mTransform * d;
 	d.normalize();
 	qDebug() << d << qFuzzyIsNull(d.y());
+}
+
+void GLWidget::toggleDebugEnable(bool enabled)
+{
+	qDebug() << "debug" << enabled;
+	mDebugEnabled = enabled;
+}
+
+void GLWidget::setDebugInterval(int interval)
+{
+	qDebug() << "interval" << interval;
+	mDebugInterval = interval;
 }

@@ -7,8 +7,6 @@ namespace Ui {
 	class MainWindow;
 }
 
-class GLWidget;
-
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -39,7 +37,6 @@ private slots:
 
 private:
 	Ui::MainWindow *ui;
-	GLWidget *mGLWidget;
 	int mTimerId;
 
 protected:

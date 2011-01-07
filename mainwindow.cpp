@@ -14,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-	mGLWidget = new GLWidget(this);
-	ui->verticalLayout->addWidget(mGLWidget);
+	ui->displayWidget->toggleDebugEnable(ui->debugEnableCheckBox->isChecked());
+	ui->displayWidget->setDebugInterval(ui->debugIntervalSpinBox->value());
 
 	// use map to sort values
 	QMap<QString, QPortSettings::BaudRate> map;
@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-	delete mGLWidget;
+	delete ui->displayWidget;
 	delete ui;
 }
 
@@ -91,7 +91,7 @@ void MainWindow::dataArrived()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
 	//pos.setY(-pos.y());
-	mGLWidget->move(pos);
+	ui->displayWidget->move(pos);
 	static int count = 0;
 	if (count++ == 20) {
 		//qDebug() << "pos:" << pos;
@@ -102,7 +102,7 @@ void MainWindow::dataArrived()
 void MainWindow::on_rightNearPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	mGLWidget->setYellowNearPos(pos);
+	ui->displayWidget->setYellowNearPos(pos);
 	ui->rightNearXLcdNumber->display(pos.x());
 	ui->rightNearYLcdNumber->display(pos.y());
 	ui->rightNearZLcdNumber->display(pos.z());
@@ -111,7 +111,7 @@ void MainWindow::on_rightNearPushButton_clicked()
 void MainWindow::on_rightFarPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	mGLWidget->setYellowFarPos(pos);
+	ui->displayWidget->setYellowFarPos(pos);
 	ui->rightFarXLcdNumber->display(pos.x());
 	ui->rightFarYLcdNumber->display(pos.y());
 	ui->rightFarZLcdNumber->display(pos.z());
@@ -120,7 +120,7 @@ void MainWindow::on_rightFarPushButton_clicked()
 void MainWindow::on_leftNearPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Blue).filteredPos;
-	mGLWidget->setBlueNearPos(pos);
+	ui->displayWidget->setBlueNearPos(pos);
 	ui->leftNearXLcdNumber->display(pos.x());
 	ui->leftNearYLcdNumber->display(pos.y());
 	ui->leftNearZLcdNumber->display(pos.z());
@@ -129,7 +129,7 @@ void MainWindow::on_leftNearPushButton_clicked()
 void MainWindow::on_leftFarPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Blue).filteredPos;
-	mGLWidget->setBlueFarPos(pos);
+	ui->displayWidget->setBlueFarPos(pos);
 	ui->leftFarXLcdNumber->display(pos.x());
 	ui->leftFarYLcdNumber->display(pos.y());
 	ui->leftFarZLcdNumber->display(pos.z());
@@ -138,22 +138,22 @@ void MainWindow::on_leftFarPushButton_clicked()
 void MainWindow::on_rightFrontPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	mGLWidget->calibrateRightFront(pos);
+	ui->displayWidget->calibrateRightFront(pos);
 }
 
 void MainWindow::on_rightZeroPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	mGLWidget->calibrateRightZero(pos);
+	ui->displayWidget->calibrateRightZero(pos);
 }
 
 void MainWindow::on_rightRightPushButton_clicked()
 {
 	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
-	mGLWidget->calibrateRightRight(pos);
+	ui->displayWidget->calibrateRightRight(pos);
 }
 
 void MainWindow::on_rightCalibratePushButton_clicked()
 {
-	mGLWidget->calibrateRightGo();
+	ui->displayWidget->calibrateRightGo();
 }

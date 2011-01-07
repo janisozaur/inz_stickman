@@ -20,6 +20,9 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMinimumSize</enum>
       </property>
+      <item>
+       <widget class="GLWidget" name="displayWidget" native="true"/>
+      </item>
      </layout>
     </item>
     <item>
@@ -212,6 +215,39 @@
       </item>
      </layout>
     </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="debugEnableCheckBox">
+        <property name="toolTip">
+         <string>Log debug data</string>
+        </property>
+        <property name="text">
+         <string>Debug</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="debugIntervalSpinBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Show sample data every ... samples</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="value">
+         <number>20</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -235,6 +271,67 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GLWidget</class>
+   <extends>QWidget</extends>
+   <header>glwidget.h</header>
+   <container>1</container>
+   <slots>
+    <slot>toggleDebugEnable(bool)</slot>
+    <slot>setDebugInterval(int)</slot>
+   </slots>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>debugEnableCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>debugIntervalSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>275</x>
+     <y>519</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>420</x>
+     <y>525</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>debugEnableCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>toggleDebugEnable(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>130</x>
+     <y>524</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>95</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>debugIntervalSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDebugInterval(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>573</x>
+     <y>525</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
