@@ -133,7 +133,7 @@ void SamplingThread::append(const QByteArray &data, double elapsed)
 		// make the coordinate system relative to user
 		mySample.x = -x;
 		mySample.y = -y;
-		mySample.z = z;
+		mySample.z = -z;
 
 		//qDebug() << mTempData.left(8).toHex();
 		//qDebug() << "Sample(" << mySample.left << "," << mySample.right << "," <<
