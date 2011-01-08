@@ -232,10 +232,10 @@ void GLWidget::timeout()
 	mRotation += (elapsed / (float)mUpdateTimer.interval()) * 2.0f;
 	mRotation = mRotation % 360;
 
-	float y = mPos.z() - mYellowNearPos.z();
+	float y = mPos.y() - mRightZeroPos.y();
 	QVector3D pos = mPos;
-	pos.setX(mYellowNearPos.x());
-	float l = (pos - mYellowNearPos).length();
+	pos.setX(mRightZeroPos.x());
+	float l = (pos - mRightZeroPos).length();
 	mDegrees = 360 * asin(y / l) * M_1_PI / 2;
 	static int count = 0;
 	if (count++ == 20) {
@@ -318,9 +318,9 @@ void GLWidget::calibrateRightZero(const QVector3D &pos)
 
 void GLWidget::calibrateRightGo()
 {
-	//mRightFrontPos = QVector3D(-32.0761, 7.20789, -62.2479);
-	//mRightRightPos = QVector3D(29.4606, -70.0331, -57.7565);
-	//mRightZeroPos = QVector3D(32.4791, 9.469, -69.7508);
+	//mRightFrontPos = QVector3D(-15.968, 33.3038, -65.4952);
+	//mRightRightPos = QVector3D(-37.6838, -63.9283, -72.0952);
+	//mRightZeroPos = QVector3D(29.4606, -70.0331, -57.7565);
 	qDebug() << "mRightFrontPos" << mRightFrontPos;
 	qDebug() << "mRightRightPos" << mRightRightPos;
 	qDebug() << "mRightZeroPos" << mRightZeroPos;
@@ -361,11 +361,36 @@ void GLWidget::calibrateRightGo()
 	tempMatrix.rotate(90, 1, 0, 0);
 	mTransform = tempMatrix * mTransform;
 
+	qDebug() << "rotation:" << xRot << yRot;
+	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
+	qDebug() << "*** diagon:" << d << "rotated:" << mTransform * d;
+
 	d.normalize();
-	float cosVal = (mTransform * d).x();
-	yRot = acos(cosVal) * 360 * M_1_PI / 2;
-	yRot += 45;
-	yRot *= -sign(d.x());
+	qreal cosVal = (mTransform * d).x();
+	if (d.x() <= 0) {
+		if (d.z() <= 0) {
+			// rr.x <= rf.x && rr.z <= rf.z
+			// 45 + alfa
+			yRot = 45 + acos(fabs(cosVal)) * 360 * M_1_PI / 2;
+		} else {
+			// rr.x <= rf.x && rr.z > rf.z
+			// 45 - alfa
+			yRot = 45 - acos(fabs(cosVal)) * 360 * M_1_PI / 2;
+		}
+	} else {
+		if (d.z() <= 0) {
+			// rr.x > rf.x && rr.z <= rf.z
+			// alfa - 135
+			yRot = acos(cosVal) * 360 * M_1_PI / 2 - 135;
+		} else {
+			// rr.x > rf.x && rr.z > rf.z
+			// 225 - alfa
+			yRot = 225 - acos(cosVal) * 360 * M_1_PI / 2;
+		}
+	}
+	qDebug() << "rotated diagon:" << d << mTransform * d;
 	tempMatrix = QMatrix4x4();
 	tempMatrix.rotate(yRot, 0, 1, 0);
 	mTransform = tempMatrix * mTransform;
@@ -390,14 +415,36 @@ void GLWidget::calibrateRightGo()
 			 << "\t" << yAxis << endl
 			 << "\t" << zAxis << endl;
 
-	QVector3D translation = mTransform * -mRightZeroPos;
+	// move coordinate system origin to the new position based on a square
+	// diagon rr - rf
+	QVector3D zero = mTransform * mRightFrontPos;
+	zero.setX((mTransform * mRightRightPos).x());
+	QVector3D translation = -zero;
 	QMatrix4x4 translationMatrix;
 	translationMatrix.translate(translation);
 	mTransform = translationMatrix * mTransform;
 
-	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
-	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
-	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
+	if (mTransform.determinant() == 0) {
+		qDebug() << "FATAL! matrix not invertible!";
+	}
+	//mTransform = mTransform.inverted();
+
+	QList<QVector3D> list;
+	list << QVector3D(-16.113, -99.127, -68.146);
+	list << QVector3D(-37.684, -63.928, -72.095);
+	list << QVector3D(-74.407, -4.004, -78.818);
+	list << QVector3D(-15.968, 33.304, -65.495);
+	list << QVector3D(20.755, -26.620, -58.772);
+	list << QVector3D(42.327, -61.819, -54.823);
+	list << QVector3D(29.461, -70.033, -57.756);
+
+	for (int i = 0; i < list.count(); i++) {
+		qDebug() << "i:" << i << list.at(i) << mTransform * list.at(i) << mTransform.inverted() * list.at(i);
+	}
+
+	qDebug() << "rotated mRightFrontPos:" << mRightFrontPos << mTransform * mRightFrontPos << mTransform.inverted() * mTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mRightRightPos << mTransform * mRightRightPos << mTransform.inverted() * mTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mRightZeroPos  << mTransform * mRightZeroPos  << mTransform.inverted() * mTransform * mRightZeroPos;
 }
 
 void GLWidget::toggleDebugEnable(bool enabled)
