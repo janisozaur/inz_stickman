@@ -145,21 +145,22 @@ void GLWidget::paintGL()
 	// one arm
 	glPushMatrix();
 	glRotatef(90, 1, 0, 0);
-	if (!std::isnan(mDegrees)) {
-		glRotatef(mDegrees, 1, 0, 0);
+	glRotatef(90 - mRightArmLeftRightDegrees, 0, 1, 0);
+	if (!std::isnan(mRightArmUpDownDegrees)) {
+		glRotatef(mRightArmUpDownDegrees, 1, 0, 0);
 	}
 	glRotatef(90, 0, 1, 0);
 	glTranslatef(0, 0, 3);
-	if (!std::isnan(mRightArmDegrees)) {
-		glRotatef(-(90 - mRightArmDegrees), 0, 1, 0);
+	if (!std::isnan(mRightArmFoldDegrees)) {
+		glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
 	}
 	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
 
 	glPushMatrix();
 	glTranslatef(0, 0, 4.5);
 	//glRotatef(-90, 0, 1, 0);
-	if (!std::isnan(mRightArmDegrees)) {
-		glRotatef(-2 * mRightArmDegrees, 0, 1, 0);
+	if (!std::isnan(mRightArmFoldDegrees)) {
+		glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
 	}
 	gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
 	glPopMatrix();
@@ -182,7 +183,7 @@ void GLWidget::paintGL()
 
 	// head
 	glTranslatef(0, 0, -4);
-	gluSphere(mQuadric, 4, 32, 32);
+	//gluSphere(mQuadric, 4, 32, 32);
 
 	glPopMatrix();
 
@@ -250,15 +251,24 @@ void GLWidget::move(const QVector3D &pos)
 				// for testing
 				float y = pos.z() - mYellowNearPos.z();
 				float l = (pos - mYellowNearPos).length();
-				mDegrees = 360 * -acos(y / l) * M_1_PI / 2;
-				mDegrees = 90 - mDegrees + 180;
+				mRightArmUpDownDegrees = 360 * -acos(y / l) * M_1_PI / 2;
+				mRightArmUpDownDegrees = 90 - mRightArmUpDownDegrees + 180;
 				static int count = 0;
 				float armLength = (mYellowFarPos - mYellowNearPos).length();
-				mRightArmDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
-				mRightArmDegrees = qBound(0.0f, mRightArmDegrees, 90.0f);
+				mRightArmFoldDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
+				mRightArmFoldDegrees = qBound(0.0f, mRightArmFoldDegrees, 90.0f);
+				// FIXME: this should perhaps use some other axis and is the
+				// current state only for testing
+				float desiredZ = (mYellowNearPos - mYellowFarPos).x();
+				desiredZ = acos(desiredZ / armLength) * 360 * M_1_PI / 2;
+				float z = (pos - mYellowFarPos).y();
+				z = asin(z / armLength) * 360 * M_1_PI / 2;
+				mRightArmLeftRightDegrees = z - desiredZ + 90;
 				if (mDebugEnabled && count++ >= mDebugInterval) {
 					qDebug() << "y:" << y << "l:" << l << "length" << armLength;
-					qDebug() << "degrees" << mDegrees << "arm degrees" << mRightArmDegrees;
+					qDebug() << "arm up/down" << mRightArmUpDownDegrees << "arm fold"
+							 << mRightArmFoldDegrees << "arm left/right"
+							 << mRightArmLeftRightDegrees;
 					count = 0;
 				}
 			}
@@ -495,5 +505,5 @@ void GLWidget::setLeftCalibration(Calibration c)
 void GLWidget::rightReset()
 {
 	mRightTransform = QMatrix4x4();
-	mDegrees = 0;
+	mRightArmUpDownDegrees = 0;
 }

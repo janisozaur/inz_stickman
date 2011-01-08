@@ -51,7 +51,7 @@ private:
 	QVector3D mPos;
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
-	float mDegrees, mRightArmDegrees;
+	float mRightArmUpDownDegrees, mRightArmFoldDegrees, mRightArmLeftRightDegrees;
 	QMatrix4x4 mRightTransform;
 	int mDebugInterval;
 	bool mDebugEnabled;
