@@ -163,6 +163,14 @@ void MainWindow::on_rightResetPushButton_clicked()
 {
 	ui->displayWidget->rightReset();
 	ui->displayWidget->setRightCalibration(GLWidget::None);
+
+	ui->rightFarXLcdNumber->display(0);
+	ui->rightFarYLcdNumber->display(0);
+	ui->rightFarZLcdNumber->display(0);
+
+	ui->rightNearXLcdNumber->display(0);
+	ui->rightNearYLcdNumber->display(0);
+	ui->rightNearZLcdNumber->display(0);
 }
 
 void MainWindow::on_rightRegularCalibratePushButton_clicked()

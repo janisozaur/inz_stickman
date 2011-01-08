@@ -483,4 +483,5 @@ void GLWidget::setLeftCalibration(Calibration c)
 void GLWidget::rightReset()
 {
 	mRightTransform = QMatrix4x4();
+	mDegrees = 0;
 }
