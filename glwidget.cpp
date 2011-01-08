@@ -67,6 +67,7 @@ GLWidget::GLWidget(QWidget *parent) :
 	whiteSpecularLight[3] = 1.0;
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
+	//mRightArmDegrees = 90;
 }
 
 GLWidget::~GLWidget()
@@ -149,11 +150,17 @@ void GLWidget::paintGL()
 	}
 	glRotatef(90, 0, 1, 0);
 	glTranslatef(0, 0, 3);
+	if (!std::isnan(mRightArmDegrees)) {
+		glRotatef(-(90 - mRightArmDegrees), 0, 1, 0);
+	}
 	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
 
 	glPushMatrix();
 	glTranslatef(0, 0, 4.5);
-	glRotatef(-90, 0, 1, 0);
+	//glRotatef(-90, 0, 1, 0);
+	if (!std::isnan(mRightArmDegrees)) {
+		glRotatef(-2 * mRightArmDegrees, 0, 1, 0);
+	}
 	gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
 	glPopMatrix();
 
@@ -245,8 +252,12 @@ void GLWidget::move(const QVector3D &pos)
 				float l = (pos - mYellowNearPos).length();
 				mDegrees = 360 * -asin(y / l) * M_1_PI / 2;
 				static int count = 0;
+				float armLength = (mYellowFarPos - mYellowNearPos).length();
+				mRightArmDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
+				mRightArmDegrees = qBound(0.0f, mRightArmDegrees, 90.0f);
 				if (mDebugEnabled && count++ >= mDebugInterval) {
-					qDebug() << "degrees" << mDegrees;
+					qDebug() << "l:" << l << "length" << armLength;
+					qDebug() << "degrees" << mDegrees << "arm degrees" << mRightArmDegrees;
 					count = 0;
 				}
 			}
