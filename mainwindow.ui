@@ -60,71 +60,92 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <layout class="QHBoxLayout" name="leftNearHorizontalLayout">
-           <item>
-            <widget class="QPushButton" name="leftNearPushButton">
-             <property name="text">
-              <string>get near</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftNearXLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftNearYLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftNearZLcdNumber"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="leftFarHorizontalLayout">
-           <item>
-            <widget class="QPushButton" name="leftFarPushButton">
-             <property name="text">
-              <string>get far</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftFarXLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftFarYLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="leftFarZLcdNumber"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="leftFrontPushButton">
-           <property name="text">
-            <string>Left Front</string>
+          <widget class="QTabWidget" name="leftTabWidget">
+           <property name="currentIndex">
+            <number>0</number>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="leftLeftPushButton">
-           <property name="text">
-            <string>Left Left</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="leftZeroPushButton">
-           <property name="text">
-            <string>Left Zero</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="leftCalibratePushButton">
-           <property name="text">
-            <string>Calibrate</string>
-           </property>
+           <widget class="QWidget" name="leftRegularTab">
+            <attribute name="title">
+             <string>Regular</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QHBoxLayout" name="leftNearHorizontalLayout">
+               <item>
+                <widget class="QPushButton" name="leftNearPushButton">
+                 <property name="text">
+                  <string>get near</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftNearXLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftNearYLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftNearZLcdNumber"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="leftFarHorizontalLayout">
+               <item>
+                <widget class="QPushButton" name="leftFarPushButton">
+                 <property name="text">
+                  <string>get far</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftFarXLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftFarYLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="leftFarZLcdNumber"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="leftExperimentalTab">
+            <attribute name="title">
+             <string>Experimental</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_8">
+             <item>
+              <widget class="QPushButton" name="leftFrontPushButton">
+               <property name="text">
+                <string>Left Front</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="leftLeftPushButton">
+               <property name="text">
+                <string>Left Left</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="leftZeroPushButton">
+               <property name="text">
+                <string>Left Zero</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="leftCalibratePushButton">
+               <property name="text">
+                <string>Calibrate</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -143,71 +164,92 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <layout class="QHBoxLayout" name="rightNearHorizontalLayout">
-           <item>
-            <widget class="QPushButton" name="rightNearPushButton">
-             <property name="text">
-              <string>get near</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightNearXLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightNearYLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightNearZLcdNumber"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="rightFarHorizontalLayout">
-           <item>
-            <widget class="QPushButton" name="rightFarPushButton">
-             <property name="text">
-              <string>get far</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightFarXLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightFarYLcdNumber"/>
-           </item>
-           <item>
-            <widget class="QLCDNumber" name="rightFarZLcdNumber"/>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QPushButton" name="rightFrontPushButton">
-           <property name="text">
-            <string>Right Front</string>
+          <widget class="QTabWidget" name="rightTabWidget">
+           <property name="currentIndex">
+            <number>0</number>
            </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="rightRightPushButton">
-           <property name="text">
-            <string>Right Right</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="rightZeroPushButton">
-           <property name="text">
-            <string>Right Zero</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="rightCalibratePushButton">
-           <property name="text">
-            <string>Calibrate</string>
-           </property>
+           <widget class="QWidget" name="rightRegularTab">
+            <attribute name="title">
+             <string>Regular</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QHBoxLayout" name="rightNearHorizontalLayout">
+               <item>
+                <widget class="QPushButton" name="rightNearPushButton">
+                 <property name="text">
+                  <string>get near</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightNearXLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightNearYLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightNearZLcdNumber"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="rightFarHorizontalLayout">
+               <item>
+                <widget class="QPushButton" name="rightFarPushButton">
+                 <property name="text">
+                  <string>get far</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightFarXLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightFarYLcdNumber"/>
+               </item>
+               <item>
+                <widget class="QLCDNumber" name="rightFarZLcdNumber"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="rightExperimentalTab">
+            <attribute name="title">
+             <string>Experimental</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QPushButton" name="rightFrontPushButton">
+               <property name="text">
+                <string>Right Front</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rightRightPushButton">
+               <property name="text">
+                <string>Right Right</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rightZeroPushButton">
+               <property name="text">
+                <string>Right Zero</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="rightCalibratePushButton">
+               <property name="text">
+                <string>Calibrate</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
         </layout>
