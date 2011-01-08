@@ -232,23 +232,26 @@ void GLWidget::timeout()
 	mRotation += (elapsed / (float)mUpdateTimer.interval()) * 2.0f;
 	mRotation = mRotation % 360;
 
-	float y = mPos.y() - mRightZeroPos.y();
-	QVector3D pos = mPos;
-	pos.setX(mRightZeroPos.x());
-	float l = (pos - mRightZeroPos).length();
-	mDegrees = 360 * asin(y / l) * M_1_PI / 2;
-	static int count = 0;
-	if (count++ == 20) {
-		//qDebug() << "degrees" << mDegrees;
-		count = 0;
-	}
 }
 
 void GLWidget::move(const QVector3D &pos)
 {
 	switch (mRightCalibration) {
-		case None:
 		case Regular:
+			{
+				// FIXME: this should use Y axis and is the current state only
+				// for testing
+				float y = pos.z() - mYellowNearPos.z();
+				float l = (pos - mYellowNearPos).length();
+				mDegrees = 360 * -asin(y / l) * M_1_PI / 2;
+				static int count = 0;
+				if (mDebugEnabled && count++ >= mDebugInterval) {
+					qDebug() << "degrees" << mDegrees;
+					count = 0;
+				}
+			}
+		// fall-through
+		case None:
 			mPos = pos;
 			break;
 		case Experimental:
