@@ -190,8 +190,25 @@ void GLWidget::paintGL()
 	zAxis = mTransform * zAxis;
 	QVector3D zero = mTransform * QVector3D();
 
-	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
+
+	/*glBegin(GL_TRIANGLES); {
+		QVector3D temp;
+		glColor3f(1, 0, 0);
+		temp = mTransform * mRightRightPos * 5;
+		glVertex3f(temp.x(), temp.y(), temp.z());
+
+		glColor3f(0, 1, 0);
+		temp = mTransform * mRightFrontPos * 5;
+		glVertex3f(temp.x(), temp.y(), temp.z());
+
+		glColor3f(0, 0, 1);
+		temp = mTransform * mRightZeroPos * 5;
+		glVertex3f(temp.x(), temp.y(), temp.z());
+	} glEnd();*/
+
+	glDisable(GL_DEPTH_TEST);
+
 	glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
 		glVertex3f(zero.x(), zero.y(), zero.z());
@@ -232,7 +249,7 @@ void GLWidget::move(const QVector3D &pos)
 	mPos = mTransform * pos;
 	static int count = 0;
 	if (mDebugEnabled && count++ >= mDebugInterval) {
-		qDebug() << "pos:" << pos << "transformed:" << mPos;
+		qDebug() << "pos:" << pos << "transformed:" << mPos << "inverted:" << mTransform.inverted() * pos;
 		count = 0;
 	}
 }
@@ -316,14 +333,14 @@ void GLWidget::calibrateRightGo()
 	// plane's normal vector
 	QVector3D n = QVector3D::crossProduct(mRightFrontPos - mRightZeroPos, mRightRightPos - mRightZeroPos);
 	n.normalize();
+	qDebug() << "normal:" << n;
 
 	QVector3D nx = n;
 	nx.setX(0);
 	xRot = acos(nx.z() / nx.length());
 	xRot *= sign(n.y()) * 360 * M_1_PI / 2;
 	rotationX.rotate(xRot, 1, 0, 0);
-
-	qDebug() << "normal:" << n;
+	qDebug() << "xRot:" << xRot;
 
 	QVector3D rotatedN = rotationX * n;
 	qDebug() << "rotated normal:" << rotatedN;
@@ -331,6 +348,7 @@ void GLWidget::calibrateRightGo()
 	yRot = acos(rotatedN.z() / rotatedN.length());
 	yRot *= sign(rotatedN.x()) * -360 * M_1_PI / 2;
 	rotationY.rotate(yRot, 0, 1, 0);
+	qDebug() << "yRot:" << yRot;
 
 	rotatedN = rotationY * rotatedN;
 	qDebug() << "rotated normal:" << rotatedN;
