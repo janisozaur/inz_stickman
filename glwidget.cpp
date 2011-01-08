@@ -250,13 +250,14 @@ void GLWidget::move(const QVector3D &pos)
 				// for testing
 				float y = pos.z() - mYellowNearPos.z();
 				float l = (pos - mYellowNearPos).length();
-				mDegrees = 360 * -asin(y / l) * M_1_PI / 2;
+				mDegrees = 360 * -acos(y / l) * M_1_PI / 2;
+				mDegrees = 90 - mDegrees + 180;
 				static int count = 0;
 				float armLength = (mYellowFarPos - mYellowNearPos).length();
 				mRightArmDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
 				mRightArmDegrees = qBound(0.0f, mRightArmDegrees, 90.0f);
 				if (mDebugEnabled && count++ >= mDebugInterval) {
-					qDebug() << "l:" << l << "length" << armLength;
+					qDebug() << "y:" << y << "l:" << l << "length" << armLength;
 					qDebug() << "degrees" << mDegrees << "arm degrees" << mRightArmDegrees;
 					count = 0;
 				}
