@@ -185,10 +185,10 @@ void GLWidget::paintGL()
 	glPopMatrix();
 
 	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
-	xAxis = mTransform * xAxis;
-	yAxis = mTransform * yAxis;
-	zAxis = mTransform * zAxis;
-	QVector3D zero = mTransform * QVector3D();
+	xAxis = mRightTransform * xAxis;
+	yAxis = mRightTransform * yAxis;
+	zAxis = mRightTransform * zAxis;
+	QVector3D zero = mRightTransform * QVector3D();
 
 	glDisable(GL_LIGHTING);
 
@@ -252,12 +252,12 @@ void GLWidget::move(const QVector3D &pos)
 			mPos = pos;
 			break;
 		case Experimental:
-			mPos = mTransform * pos;
+			mPos = mRightTransform * pos;
 			break;
 	}
 	static int count = 0;
 	if (mDebugEnabled && count++ >= mDebugInterval) {
-		qDebug() << "pos:" << pos << "transformed:" << mTransform * pos << "inverted:" << mTransform.inverted() * pos;
+		qDebug() << "pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
 		count = 0;
 	}
 }
@@ -361,22 +361,22 @@ void GLWidget::calibrateRightGo()
 	rotatedN = rotationY * rotatedN;
 	qDebug() << "rotated normal:" << rotatedN;
 
-	mTransform = rotationY * rotationX;
+	mRightTransform = rotationY * rotationX;
 
-	qDebug() << "rotated diagon:" << mTransform * d;
+	qDebug() << "rotated diagon:" << mRightTransform * d;
 
 	// rotate everything to XZ plane (from XY)
 	tempMatrix.rotate(90, 1, 0, 0);
-	mTransform = tempMatrix * mTransform;
+	mRightTransform = tempMatrix * mRightTransform;
 
 	qDebug() << "rotation:" << xRot << yRot;
-	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
-	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
-	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
-	qDebug() << "*** diagon:" << d << "rotated:" << mTransform * d;
+	qDebug() << "rotated mRightFrontPos:" << mRightTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mRightTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mRightTransform * mRightZeroPos;
+	qDebug() << "*** diagon:" << d << "rotated:" << mRightTransform * d;
 
 	d.normalize();
-	qreal cosVal = (mTransform * d).x();
+	qreal cosVal = (mRightTransform * d).x();
 	if (d.x() <= 0) {
 		if (d.z() <= 0) {
 			// rr.x <= rf.x && rr.z <= rf.z
@@ -398,25 +398,25 @@ void GLWidget::calibrateRightGo()
 			yRot = 225 - acos(cosVal) * 360 * M_1_PI / 2;
 		}
 	}
-	qDebug() << "rotated diagon:" << d << mTransform * d;
+	qDebug() << "rotated diagon:" << d << mRightTransform * d;
 	tempMatrix = QMatrix4x4();
 	tempMatrix.rotate(yRot, 0, 1, 0);
-	mTransform = tempMatrix * mTransform;
+	mRightTransform = tempMatrix * mRightTransform;
 
-	d = mTransform * d;
+	d = mRightTransform * d;
 
 	qDebug() << "rotation:" << xRot << yRot;
-	qDebug() << "rotated mRightFrontPos:" << mTransform * mRightFrontPos;
-	qDebug() << "rotated mRightRightPos:" << mTransform * mRightRightPos;
-	qDebug() << "rotated mRightZeroPos:"  << mTransform * mRightZeroPos;
+	qDebug() << "rotated mRightFrontPos:" << mRightTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mRightTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mRightTransform * mRightZeroPos;
 	qDebug() << "rotated diagon:" << d;
 	qDebug() << yRot << d << qFuzzyIsNull(d.y());
 
 
 	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
-	xAxis = mTransform * xAxis;
-	yAxis = mTransform * yAxis;
-	zAxis = mTransform * zAxis;
+	xAxis = mRightTransform * xAxis;
+	yAxis = mRightTransform * yAxis;
+	zAxis = mRightTransform * zAxis;
 
 	qDebug() << "new coordinate system:" << endl
 			 << "\t" << xAxis << endl
@@ -425,14 +425,14 @@ void GLWidget::calibrateRightGo()
 
 	// move coordinate system origin to the new position based on a square
 	// diagon rr - rf
-	QVector3D zero = mTransform * mRightFrontPos;
-	zero.setX((mTransform * mRightRightPos).x());
+	QVector3D zero = mRightTransform * mRightFrontPos;
+	zero.setX((mRightTransform * mRightRightPos).x());
 	QVector3D translation = -zero;
 	QMatrix4x4 translationMatrix;
 	translationMatrix.translate(translation);
-	mTransform = translationMatrix * mTransform;
+	mRightTransform = translationMatrix * mRightTransform;
 
-	if (mTransform.determinant() == 0) {
+	if (mRightTransform.determinant() == 0) {
 		qDebug() << "FATAL! matrix not invertible!";
 	}
 	//mTransform = mTransform.inverted();
@@ -447,12 +447,12 @@ void GLWidget::calibrateRightGo()
 	list << QVector3D(29.461, -70.033, -57.756);
 
 	for (int i = 0; i < list.count(); i++) {
-		qDebug() << "i:" << i << list.at(i) << mTransform * list.at(i) << mTransform.inverted() * list.at(i);
+		qDebug() << "i:" << i << list.at(i) << mRightTransform * list.at(i) << mRightTransform.inverted() * list.at(i);
 	}
 
-	qDebug() << "rotated mRightFrontPos:" << mRightFrontPos << mTransform * mRightFrontPos << mTransform.inverted() * mTransform * mRightFrontPos;
-	qDebug() << "rotated mRightRightPos:" << mRightRightPos << mTransform * mRightRightPos << mTransform.inverted() * mTransform * mRightRightPos;
-	qDebug() << "rotated mRightZeroPos:"  << mRightZeroPos  << mTransform * mRightZeroPos  << mTransform.inverted() * mTransform * mRightZeroPos;
+	qDebug() << "rotated mRightFrontPos:" << mRightFrontPos << mRightTransform * mRightFrontPos << mRightTransform.inverted() * mRightTransform * mRightFrontPos;
+	qDebug() << "rotated mRightRightPos:" << mRightRightPos << mRightTransform * mRightRightPos << mRightTransform.inverted() * mRightTransform * mRightRightPos;
+	qDebug() << "rotated mRightZeroPos:"  << mRightZeroPos  << mRightTransform * mRightZeroPos  << mRightTransform.inverted() * mRightTransform * mRightZeroPos;
 }
 
 void GLWidget::toggleDebugEnable(bool enabled)
@@ -479,5 +479,5 @@ void GLWidget::setLeftCalibration(Calibration c)
 
 void GLWidget::rightReset()
 {
-	mTransform = QMatrix4x4();
+	mRightTransform = QMatrix4x4();
 }

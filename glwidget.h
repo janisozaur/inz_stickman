@@ -52,7 +52,7 @@ private:
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mDegrees;
-	QMatrix4x4 mTransform;
+	QMatrix4x4 mRightTransform;
 	int mDebugInterval;
 	bool mDebugEnabled;
 	Calibration mRightCalibration, mLeftCalibration;
