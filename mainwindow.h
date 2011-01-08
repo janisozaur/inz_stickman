@@ -33,7 +33,11 @@ private slots:
 
 	void on_rightRightPushButton_clicked();
 
-	void on_rightCalibratePushButton_clicked();
+	void on_rightExperimentalCalibratePushButton_clicked();
+
+	void on_rightResetPushButton_clicked();
+
+	void on_rightRegularCalibratePushButton_clicked();
 
 private:
 	Ui::MainWindow *ui;

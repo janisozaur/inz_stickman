@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>790</width>
-    <height>594</height>
+    <height>740</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,6 +109,13 @@
                </item>
               </layout>
              </item>
+             <item>
+              <widget class="QPushButton" name="leftRegularCalibratePushButton">
+               <property name="text">
+                <string>Calibrate</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="leftExperimentalTab">
@@ -138,7 +145,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="leftCalibratePushButton">
+              <widget class="QPushButton" name="leftExperimentalCalibratePushButton">
                <property name="text">
                 <string>Calibrate</string>
                </property>
@@ -146,6 +153,13 @@
              </item>
             </layout>
            </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="leftResetPushButton">
+           <property name="text">
+            <string>Reset</string>
+           </property>
           </widget>
          </item>
         </layout>
@@ -213,6 +227,13 @@
                </item>
               </layout>
              </item>
+             <item>
+              <widget class="QPushButton" name="rightRegularCalibratePushButton">
+               <property name="text">
+                <string>Calibrate</string>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="rightExperimentalTab">
@@ -242,7 +263,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="rightCalibratePushButton">
+              <widget class="QPushButton" name="rightExperimentalCalibratePushButton">
                <property name="text">
                 <string>Calibrate</string>
                </property>
@@ -250,6 +271,13 @@
              </item>
             </layout>
            </widget>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="rightResetPushButton">
+           <property name="text">
+            <string>Reset</string>
+           </property>
           </widget>
          </item>
         </layout>

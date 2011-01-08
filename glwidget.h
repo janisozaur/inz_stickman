@@ -6,11 +6,14 @@
 #include <QTimer>
 #include <QVector3D>
 #include <QMatrix4x4>
+#include <QFlags>
 
 class GLWidget : public QGLWidget
 {
 	Q_OBJECT
 public:
+	enum Calibration {None, Regular, Experimental};
+
 	explicit GLWidget(QWidget *parent = 0);
 	~GLWidget();
 	void move(const QVector3D &pos);
@@ -26,6 +29,9 @@ public:
 	void calibrateRightRight(const QVector3D &pos);
 	void calibrateRightZero(const QVector3D &pos);
 	void calibrateRightGo();
+	void setRightCalibration(Calibration c);
+	void setLeftCalibration(Calibration c);
+	void rightReset();
 
 signals:
 
@@ -49,6 +55,7 @@ private:
 	QMatrix4x4 mTransform;
 	int mDebugInterval;
 	bool mDebugEnabled;
+	Calibration mRightCalibration, mLeftCalibration;
 
 protected:
 	void initializeGL();

@@ -153,7 +153,19 @@ void MainWindow::on_rightRightPushButton_clicked()
 	ui->displayWidget->calibrateRightRight(pos);
 }
 
-void MainWindow::on_rightCalibratePushButton_clicked()
+void MainWindow::on_rightExperimentalCalibratePushButton_clicked()
 {
 	ui->displayWidget->calibrateRightGo();
+	ui->displayWidget->setRightCalibration(GLWidget::Experimental);
+}
+
+void MainWindow::on_rightResetPushButton_clicked()
+{
+	ui->displayWidget->rightReset();
+	ui->displayWidget->setRightCalibration(GLWidget::None);
+}
+
+void MainWindow::on_rightRegularCalibratePushButton_clicked()
+{
+	ui->displayWidget->setRightCalibration(GLWidget::Regular);
 }

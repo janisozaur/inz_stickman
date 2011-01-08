@@ -246,10 +246,18 @@ void GLWidget::timeout()
 
 void GLWidget::move(const QVector3D &pos)
 {
-	mPos = mTransform * pos;
+	switch (mRightCalibration) {
+		case None:
+		case Regular:
+			mPos = pos;
+			break;
+		case Experimental:
+			mPos = mTransform * pos;
+			break;
+	}
 	static int count = 0;
 	if (mDebugEnabled && count++ >= mDebugInterval) {
-		qDebug() << "pos:" << pos << "transformed:" << mPos << "inverted:" << mTransform.inverted() * pos;
+		qDebug() << "pos:" << pos << "transformed:" << mTransform * pos << "inverted:" << mTransform.inverted() * pos;
 		count = 0;
 	}
 }
@@ -457,4 +465,19 @@ void GLWidget::setDebugInterval(int interval)
 {
 	qDebug() << "interval" << interval;
 	mDebugInterval = interval;
+}
+
+void GLWidget::setRightCalibration(Calibration c)
+{
+	mRightCalibration = c;
+}
+
+void GLWidget::setLeftCalibration(Calibration c)
+{
+	mLeftCalibration = c;
+}
+
+void GLWidget::rightReset()
+{
+	mTransform = QMatrix4x4();
 }
