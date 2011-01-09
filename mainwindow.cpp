@@ -194,6 +194,6 @@ void MainWindow::on_benchmarkPushButton_clicked()
 		ui->displayWidget->calibrateRightGo(false);
 	}
 	int time = benchTime.elapsed();
-	ui->displayWidget->rightReset();
+	on_rightResetPushButton_clicked();
 	qDebug() << "doing transform" << times << "times took" << time << "ms";
 }
