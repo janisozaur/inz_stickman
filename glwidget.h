@@ -28,7 +28,11 @@ public:
 	void calibrateRightFront(const QVector3D &pos);
 	void calibrateRightRight(const QVector3D &pos);
 	void calibrateRightZero(const QVector3D &pos);
-	void calibrateRightGo();
+	QVector3D getRightFrontPos() const;
+	QVector3D getRightRightPos() const;
+	QVector3D getRightZeroPos() const;
+	Calibration getRightCalibration() const;
+	void calibrateRightGo(bool debug = true);
 	void setRightCalibration(Calibration c);
 	void setLeftCalibration(Calibration c);
 	void rightReset();

@@ -39,6 +39,8 @@ private slots:
 
 	void on_rightRegularCalibratePushButton_clicked();
 
+	void on_benchmarkPushButton_clicked();
+
 private:
 	Ui::MainWindow *ui;
 	int mTimerId;

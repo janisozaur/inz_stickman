@@ -177,3 +177,23 @@ void MainWindow::on_rightRegularCalibratePushButton_clicked()
 {
 	ui->displayWidget->setRightCalibration(GLWidget::Regular);
 }
+
+void MainWindow::on_benchmarkPushButton_clicked()
+{
+	QVector3D rightFrontPos = QVector3D(-15.968, 33.3038, -65.4952);
+	QVector3D rightRightPos = QVector3D(-37.6838, -63.9283, -72.0952);
+	QVector3D rightZeroPos = QVector3D(29.4606, -70.0331, -57.7565);
+	QTime benchTime;
+	benchTime.start();
+	int times = 100000;
+	for (int i = 0; i < times; i++) {
+		ui->displayWidget->rightReset();
+		ui->displayWidget->calibrateRightFront(rightFrontPos);
+		ui->displayWidget->calibrateRightRight(rightRightPos);
+		ui->displayWidget->calibrateRightZero(rightZeroPos);
+		ui->displayWidget->calibrateRightGo(false);
+	}
+	int time = benchTime.elapsed();
+	ui->displayWidget->rightReset();
+	qDebug() << "doing transform" << times << "times took" << time << "ms";
+}
