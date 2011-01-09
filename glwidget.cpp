@@ -16,7 +16,7 @@ inline int fuzzySign(double d)
 	} else {
 		sign = -1;
 	}
-	qDebug() << "fuzzy sign of" << d << "is" << sign;
+	//qDebug() << "fuzzy sign of" << d << "is" << sign;
 	return sign;
 }
 
@@ -30,7 +30,7 @@ inline int sign(double d)
 	} else {
 		sign = -1;
 	}
-	qDebug() << "sign of" << d << "is" << sign;
+	//qDebug() << "sign of" << d << "is" << sign;
 	return sign;
 }
 
@@ -334,19 +334,19 @@ QVector3D GLWidget::blueFarPos() const
 void GLWidget::calibrateRightFront(const QVector3D &pos)
 {
 	mRightFrontPos = pos;
-	qDebug() << "set right front pos to" << pos;
+	//qDebug() << "set right front pos to" << pos;
 }
 
 void GLWidget::calibrateRightRight(const QVector3D &pos)
 {
 	mRightRightPos = pos;
-	qDebug() << "set right right pos to" << pos;
+	//qDebug() << "set right right pos to" << pos;
 }
 
 void GLWidget::calibrateRightZero(const QVector3D &pos)
 {
 	mRightZeroPos = pos;
-	qDebug() << "set right zero pos to" << pos;
+	//qDebug() << "set right zero pos to" << pos;
 }
 
 void GLWidget::calibrateRightGo(bool debug)
