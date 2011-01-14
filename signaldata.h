@@ -26,6 +26,7 @@ signals:
 	void dataArrived();
 	void started();
 	void finished();
+	void error(QString);
 
 private:
 	SignalData();

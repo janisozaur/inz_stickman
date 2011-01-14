@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(&SignalData::instance(), SIGNAL(started()), this, SLOT(threadStarted()));
 	connect(&SignalData::instance(), SIGNAL(finished()), this, SLOT(threadFinished()));
+	connect(&SignalData::instance(), SIGNAL(error(QString)), ui->statusBar, SLOT(showMessage(QString)));
 
 	// use map to sort values
 	QMap<QString, QPortSettings::BaudRate> map;

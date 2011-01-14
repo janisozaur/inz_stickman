@@ -22,7 +22,7 @@ public:
 	explicit SamplingThread(QObject *parent = 0);
 	~SamplingThread();
 	QVector<Sample> takeSamples();
-	void open(QString fileName, QPortSettings::BaudRate baudRate);
+	bool open(QString fileName, QPortSettings::BaudRate baudRate);
 	void close();
 
 protected:
@@ -34,6 +34,7 @@ protected:
 
 signals:
 	void dataArrived();
+	void error(QString);
 
 private:
 	QVector<Sample> mSamples, mFilteredSamples;

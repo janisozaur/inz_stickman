@@ -57,7 +57,7 @@ void SamplingThread::sample(double elapsed)
 	append(readData, elapsed);
 }
 
-void SamplingThread::open(QString fileName, QPortSettings::BaudRate baudRate)
+bool SamplingThread::open(QString fileName, QPortSettings::BaudRate baudRate)
 {
 	qDebug() << "Opening" << fileName << fileName.toLatin1();
 	if (mpSerport == NULL) {
@@ -70,13 +70,26 @@ void SamplingThread::open(QString fileName, QPortSettings::BaudRate baudRate)
 		qDebug() << "settings:" << settings.toString();
 		mpSerport = new QSerialPort(fileName, settings);
 		if (!mpSerport->open()) {
-			qDebug() << "failed to open serial port" << fileName;
+			qDebug() << "failed to open serial port" << fileName << "("
+					 << mpSerport->errorString() << ")";
+			emit error(QString("Failed to open serial port %1 (%2)")
+					   .arg(fileName, mpSerport->errorString()));
+			// cleanup
+			delete mpSerport;
+			// allow another attempt to open to be made
+			mpSerport = NULL;
+			return false;
 		} else {
 			qDebug() << "port" << fileName << "successfully opened";
 		}
 		if (!mpSerport->setCommTimeouts(QSerialPort::CtScheme_NonBlockingRead)) {
 			qWarning("Cannot set communications timeout values at port %s.", qPrintable(fileName));
 		}
+		return true;
+	} else {
+		emit error(QString("Already opened serial port %1")
+				   .arg(mpSerport->portName()));
+		return false;
 	}
 }
 

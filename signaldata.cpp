@@ -15,6 +15,7 @@ SignalData::SignalData()
 	connect(&mSampler, SIGNAL(started()), this, SIGNAL(started()));
 	connect(&mSampler, SIGNAL(finished()), this, SIGNAL(finished()));
 	connect(&mSampler, SIGNAL(terminated()), this, SIGNAL(finished()));
+	connect(&mSampler, SIGNAL(error(QString)), this, SIGNAL(error(QString)));
 }
 
 SignalData::~SignalData()
@@ -63,6 +64,7 @@ void SignalData::fetchSamples()
 void SignalData::start(QString portName, QPortSettings::BaudRate baudRate)
 {
 	qDebug() << "starting sampler" << QThread::currentThreadId();
-	mSampler.open(portName, baudRate);
-	mSampler.start();
+	if (mSampler.open(portName, baudRate)) {
+		mSampler.start();
+	}
 }
