@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->displayWidget->toggleDebugEnable(ui->debugEnableCheckBox->isChecked());
 	ui->displayWidget->setDebugInterval(ui->debugIntervalSpinBox->value());
 
+	connect(&SignalData::instance(), SIGNAL(started()), this, SLOT(threadStarted()));
+	connect(&SignalData::instance(), SIGNAL(finished()), this, SLOT(threadFinished()));
+
 	// use map to sort values
 	QMap<QString, QPortSettings::BaudRate> map;
 	// values stolen from qportsettings.h
@@ -196,4 +199,14 @@ void MainWindow::on_benchmarkPushButton_clicked()
 	int time = benchTime.elapsed();
 	on_rightResetPushButton_clicked();
 	qDebug() << "doing transform" << times << "times took" << time << "ms";
+}
+
+void MainWindow::threadStarted()
+{
+	ui->statusBar->showMessage("Thread started!");
+}
+
+void MainWindow::threadFinished()
+{
+	ui->statusBar->showMessage("Thread terminated!");
 }

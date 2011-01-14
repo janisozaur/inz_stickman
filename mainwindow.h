@@ -18,6 +18,8 @@ public:
 private slots:
 	void on_startPushButton_clicked();
 	void dataArrived();
+	void threadStarted();
+	void threadFinished();
 
 	void on_rightNearPushButton_clicked();
 

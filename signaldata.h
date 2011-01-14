@@ -10,7 +10,7 @@
 #include "sample.h"
 #include "samplingthread.h"
 
-class SignalData : QObject
+class SignalData : public QObject
 {
 	Q_OBJECT
 public:
@@ -24,6 +24,8 @@ public slots:
 
 signals:
 	void dataArrived();
+	void started();
+	void finished();
 
 private:
 	SignalData();
