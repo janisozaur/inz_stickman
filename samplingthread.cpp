@@ -20,19 +20,9 @@ SamplingThread::SamplingThread(QObject *parent) :
 SamplingThread::~SamplingThread()
 {
 	qDebug() << "SamplingThread dtor" << this;
-	mStopMutex.lock();
-	mRun = false;
-	mStopMutex.unlock();
-	this->wait();
+	stop();
+	wait();
 	qDebug() << "finished";
-}
-
-void SamplingThread::timerEvent(QTimerEvent *event)
-{
-	qDebug() << "timerEvent" << event->timerId();
-	if (mTimerId == event->timerId()) {
-
-	}
 }
 
 void SamplingThread::sample(double elapsed)
@@ -48,9 +38,8 @@ void SamplingThread::sample(double elapsed)
 		//			  avail << "bytes available.";
 	}
 	if (bytesRead == -1) {
-		qWarning() << "No further data can be read. Stopping sampler.";
-		this->killTimer(mTimerId);
-		mTimerId = 0;
+		qDebug() << "No further data can be read. Stopping sampler.";
+		stop();
 		return;
 	}
 	readData.resize(bytesRead);
@@ -202,4 +191,12 @@ void SamplingThread::run()
 		run = mRun;
 		mStopMutex.unlock();
 	}
+	qDebug() << "thread succesfully finished";
+}
+
+void SamplingThread::stop()
+{
+	mStopMutex.lock();
+	mRun = false;
+	mStopMutex.unlock();
 }

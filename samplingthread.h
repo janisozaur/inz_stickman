@@ -23,13 +23,12 @@ public:
 	~SamplingThread();
 	QVector<Sample> takeSamples();
 	bool open(QString fileName, QPortSettings::BaudRate baudRate);
-	void close();
+	void stop();
 
 protected:
 	void sample(double elapsed);
 	void append(Sample mySample);
 	void append(const QByteArray &data, double elapsed);
-	void timerEvent(QTimerEvent *event);
 	void run();
 
 signals:
@@ -42,7 +41,7 @@ private:
 	QMutex mSampleMutex, mStopMutex;
 	volatile bool mRun;
 	QSerialPort *mpSerport;
-	int mTimerId, mIndex, mPrevIndex;
+	int mIndex, mPrevIndex;
 	QTime mTime;
 };
 
