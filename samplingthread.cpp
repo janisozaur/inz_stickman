@@ -27,12 +27,12 @@ SamplingThread::~SamplingThread()
 
 void SamplingThread::sample(double elapsed)
 {
-	qint64 avail = 16;//mpSerport->bytesAvailable();
+	qint64 avail = mpSerport->bytesAvailable();
 	QByteArray readData;
 	readData.reserve(avail);
 	//mpSerport->errorString();
 	qint64 bytesRead = mpSerport->read(readData.data(), avail);
-	//qDebug() << "Read" << bytesRead << "bytes of available" << avail;
+	//qDebug() << "Read" << bytesRead << "bytes of available" << avail << mpSerport->isOpen() << mpSerport->isReadable();
 	if (bytesRead != avail) {
 		//qWarning() << "Warning! Read" << bytesRead << "bytes instead of" <<
 		//			  avail << "bytes available.";
