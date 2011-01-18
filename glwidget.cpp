@@ -37,7 +37,8 @@ inline int sign(double d)
 GLWidget::GLWidget(QWidget *parent) :
 	QGLWidget(parent),
 	mQuadric(gluNewQuadric()),
-	mRotation(0)
+	mRotation(0),
+	mLeftArmLeftRightDegrees(180)
 {
 	qDebug() << "GLWidget ctor";
 	gluQuadricNormals(mQuadric, GLU_SMOOTH);
