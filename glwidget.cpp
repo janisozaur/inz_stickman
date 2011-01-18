@@ -132,52 +132,63 @@ void GLWidget::paintGL()
 
 	// one leg
 	glPushMatrix();
-	glTranslatef(1.5, 0, 9);
-	gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
+		glTranslatef(1.5, 0, 9);
+		gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
 	glPopMatrix();
 
 	// other leg
 	glPushMatrix();
-	glTranslatef(-1.5, 0, 9);
-	gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
+		glTranslatef(-1.5, 0, 9);
+		gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
 	glPopMatrix();
 
-	// one arm
+	// right arm
 	glPushMatrix();
-	glRotatef(90, 1, 0, 0);
-	glRotatef(90 - mRightArmLeftRightDegrees, 0, 1, 0);
-	if (!std::isnan(mRightArmUpDownDegrees)) {
-		glRotatef(mRightArmUpDownDegrees, 1, 0, 0);
-	}
-	glRotatef(90, 0, 1, 0);
-	glTranslatef(0, 0, 3);
-	if (!std::isnan(mRightArmFoldDegrees)) {
-		glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
-	}
-	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+		glRotatef(90, 1, 0, 0);
+		glTranslatef(3, 0, 0);
+		glRotatef(90 - mRightArmLeftRightDegrees, 0, 1, 0);
+		if (!std::isnan(mRightArmUpDownDegrees)) {
+			glRotatef(mRightArmUpDownDegrees, 1, 0, 0);
+		}
+		glRotatef(90, 0, 1, 0);
+		if (!std::isnan(mRightArmFoldDegrees)) {
+			glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
+		}
+		gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
 
-	glPushMatrix();
-	glTranslatef(0, 0, 4.5);
-	//glRotatef(-90, 0, 1, 0);
-	if (!std::isnan(mRightArmFoldDegrees)) {
-		glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
-	}
-	gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+		glPushMatrix();
+			glTranslatef(0, 0, 4.5);
+			//glRotatef(-90, 0, 1, 0);
+			if (!std::isnan(mRightArmFoldDegrees)) {
+				glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
+			}
+			gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+		glPopMatrix();
+
 	glPopMatrix();
 
-	glPopMatrix();
-
-	// other arm
+	// left arm
 	glPushMatrix();
-	glRotatef(-90, 0, 1, 0);
-	glTranslatef(0, 0, 3);
-	gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+		glRotatef(-90, 1, 0, 0);
+		glTranslatef(-3, 0, 0);
+		glRotatef(90, 0, 1, 0);
+		glRotatef(mLeftArmLeftRightDegrees, 0, 1, 0);
+		if (!std::isnan(mLeftArmUpDownDegrees)) {
+			glRotatef(-mLeftArmUpDownDegrees, 1, 0, 0);
+		}
+		if (!std::isnan(mLeftArmFoldDegrees)) {
+			glRotatef(mLeftArmFoldDegrees, 0, 1, 0);
+		}
+		gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
 
-	glPushMatrix();
-	glTranslatef(0, 0, 4.5);
-	glRotatef(-90, 0, 1, 0);
-	gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
-	glPopMatrix();
+		glPushMatrix();
+			glTranslatef(0, 0, 4.5);
+			//glRotatef(-90, 0, 1, 0);
+			if (!std::isnan(mLeftArmFoldDegrees)) {
+				glRotatef(-2 * mLeftArmFoldDegrees, 0, 1, 0);
+			}
+			gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+		glPopMatrix();
 
 	glPopMatrix();
 
@@ -188,7 +199,8 @@ void GLWidget::paintGL()
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(mPos.x(), mPos.y(), mPos.z());
+	glTranslatef(mLeftPos.x(), mLeftPos.y(), mLeftPos.z());
+	//glTranslatef(mRightPos.x(), mRightPos.y(), mRightPos.z());
 	gluSphere(mQuadric, 3, 5, 5);
 	glPopMatrix();
 
@@ -217,7 +229,7 @@ void GLWidget::paintGL()
 
 	glDisable(GL_DEPTH_TEST);
 
-	glBegin(GL_LINES);
+	/*glBegin(GL_LINES);
 		glColor3f(1, 0, 0);
 		glVertex3f(zero.x(), zero.y(), zero.z());
 		glVertex3f(xAxis.x(), xAxis.y(), xAxis.z());
@@ -229,7 +241,7 @@ void GLWidget::paintGL()
 		glColor3f(0, 0, 1);
 		glVertex3f(zero.x(), zero.y(), zero.z());
 		glVertex3f(zAxis.x(), zAxis.y(), zAxis.z());
-	glEnd();
+	glEnd();*/
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 }
@@ -242,7 +254,7 @@ void GLWidget::timeout()
 
 }
 
-void GLWidget::move(const QVector3D &pos)
+void GLWidget::moveRight(const QVector3D &pos)
 {
 	switch (mRightCalibration) {
 		case Regular:
@@ -266,25 +278,72 @@ void GLWidget::move(const QVector3D &pos)
 				mRightArmLeftRightDegrees = z - desiredZ + 90;
 				if (mDebugEnabled && count++ >= mDebugInterval) {
 					qDebug() << "y:" << y << "l:" << l << "length" << armLength;
-					qDebug() << "arm up/down" << mRightArmUpDownDegrees << "arm fold"
-							 << mRightArmFoldDegrees << "arm left/right"
+					qDebug() << "right arm up/down" << mRightArmUpDownDegrees << "right arm fold"
+							 << mRightArmFoldDegrees << "right arm left/right"
 							 << mRightArmLeftRightDegrees;
 					count = 0;
 				}
 			}
 		// fall-through
 		case None:
-			mPos = pos;
+			mRightPos = pos;
 			break;
 		case Experimental:
-			mPos = mRightTransform * pos;
+			mRightPos = mRightTransform * pos;
 			break;
 	}
+
 	static int count = 0;
 	if (mDebugEnabled && count++ >= mDebugInterval) {
-		qDebug() << "pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
+		qDebug() << "right pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
 		count = 0;
 	}
+}
+
+void GLWidget::moveLeft(const QVector3D &pos)
+{
+	switch (mLeftCalibration) {
+			case Regular:
+				{
+					// FIXME: this should use Y axis and is the current state only
+					// for testing
+					float y = pos.z() - mBlueNearPos.z();
+					float l = (pos - mBlueNearPos).length();
+					mLeftArmUpDownDegrees = 360 * -acos(y / l) * M_1_PI / 2;
+					mLeftArmUpDownDegrees = 90 - mLeftArmUpDownDegrees + 180;
+					static int count = 0;
+					float armLength = (mBlueFarPos - mBlueNearPos).length();
+					mLeftArmFoldDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
+					mLeftArmFoldDegrees = qBound(0.0f, mLeftArmFoldDegrees, 90.0f);
+					// FIXME: this should perhaps use some other axis and is the
+					// current state only for testing
+					float desiredZ = (mBlueNearPos - mBlueFarPos).x();
+					desiredZ = acos(desiredZ / armLength) * 360 * M_1_PI / 2;
+					float z = (pos - mBlueFarPos).y();
+					z = asin(z / armLength) * 360 * M_1_PI / 2;
+					mLeftArmLeftRightDegrees = z - desiredZ + 90;
+					if (mDebugEnabled && count++ >= mDebugInterval) {
+						qDebug() << "y:" << y << "l:" << l << "length" << armLength;
+						qDebug() << "left arm up/down" << mLeftArmUpDownDegrees << " left arm fold"
+								 << mLeftArmFoldDegrees << "left arm left/right"
+								 << mLeftArmLeftRightDegrees;
+						count = 0;
+					}
+				}
+			// fall-through
+			case None:
+				mLeftPos = pos;
+				break;
+			case Experimental:
+				mRightPos = mLeftTransform * pos;
+				break;
+		}
+
+		static int count = 0;
+		if (mDebugEnabled && count++ >= mDebugInterval) {
+			qDebug() << "left pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
+			count = 0;
+		}
 }
 
 void GLWidget::setYellowNearPos(const QVector3D &pos)

@@ -93,14 +93,12 @@ void MainWindow::timerEvent(QTimerEvent *event)
 
 void MainWindow::dataArrived()
 {
-	QVector3D pos = SignalData::instance().value(Yellow).filteredPos;
+	QVector3D posYellow = SignalData::instance().value(Yellow).filteredPos;
 	//pos.setY(-pos.y());
-	ui->displayWidget->move(pos);
-	static int count = 0;
-	if (count++ == 20) {
-		//qDebug() << "pos:" << pos;
-		count = 0;
-	}
+	ui->displayWidget->moveRight(posYellow);
+
+	QVector3D posBlue = SignalData::instance().value(Blue).filteredPos;
+	ui->displayWidget->moveLeft(posBlue);
 }
 
 void MainWindow::on_rightNearPushButton_clicked()
@@ -210,4 +208,9 @@ void MainWindow::threadStarted()
 void MainWindow::threadFinished()
 {
 	ui->statusBar->showMessage("Thread terminated!");
+}
+
+void MainWindow::on_leftRegularCalibratePushButton_clicked()
+{
+	ui->displayWidget->setLeftCalibration(GLWidget::Regular);
 }

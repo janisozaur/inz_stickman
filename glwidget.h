@@ -16,7 +16,8 @@ public:
 
 	explicit GLWidget(QWidget *parent = 0);
 	~GLWidget();
-	void move(const QVector3D &pos);
+	void moveRight(const QVector3D &pos);
+	void moveLeft(const QVector3D &pos);
 	void setYellowNearPos(const QVector3D &pos);
 	void setYellowFarPos(const QVector3D &pos);
 	void setBlueNearPos(const QVector3D &pos);
@@ -52,11 +53,12 @@ private:
 	int mRotation;
 	QTime mTime;
 	QTimer mUpdateTimer;
-	QVector3D mPos;
+	QVector3D mRightPos, mLeftPos;
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mRightArmUpDownDegrees, mRightArmFoldDegrees, mRightArmLeftRightDegrees;
-	QMatrix4x4 mRightTransform;
+	float mLeftArmUpDownDegrees, mLeftArmFoldDegrees, mLeftArmLeftRightDegrees;
+	QMatrix4x4 mRightTransform, mLeftTransform;
 	int mDebugInterval;
 	bool mDebugEnabled;
 	Calibration mRightCalibration, mLeftCalibration;
