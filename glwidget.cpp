@@ -174,6 +174,21 @@ void GLWidget::timeout()
 {
 	int elapsed = mPhysicsTime.restart();
 	float coef = float(elapsed) / mPhysicsTimer.interval();
+
+	// set left hand's position
+	btTransform leftTransform;
+	mLeftHandMotionState->getWorldTransform(leftTransform);
+	btVector3 leftOrigin(mLeftHandPos.x(), mLeftHandPos.y(), mLeftHandPos.z());
+	leftTransform.setOrigin(leftOrigin);
+	mLeftHandMotionState->setWorldTransform(leftTransform);
+
+	// set right hand's position
+	btTransform rightTransform;
+	mLeftHandMotionState->getWorldTransform(rightTransform);
+	btVector3 rightOrigin(mRightHandPos.x(), mRightHandPos.y(), mRightHandPos.z());
+	rightTransform.setOrigin(rightOrigin);
+	mLeftHandMotionState->setWorldTransform(rightTransform);
+
 	mDynamicsWorld->stepSimulation((float)elapsed / 1000.f, 5);
 }
 
