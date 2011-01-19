@@ -50,6 +50,7 @@ public slots:
 	void setDrawStickman(bool draw);
 	void setDrawLeftMarker(bool draw);
 	void setDrawRightMarker(bool draw);
+	void setDebugLevel(int level);
 
 private:
 	void drawStickman();
@@ -80,6 +81,7 @@ private:
 	btSequentialImpulseConstraintSolver *mSolver;
 	btDiscreteDynamicsWorld *mDynamicsWorld;
 
+	int mDebugLevel;
 	GLDebugDrawer *mDebugDrawer;
 
 protected:

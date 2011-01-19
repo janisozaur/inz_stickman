@@ -40,13 +40,19 @@ GLWidget::GLWidget(QWidget *parent) :
 	mQuadric(gluNewQuadric()),
 	mRotation(0),
 	mLeftArmLeftRightDegrees(180),
+	mDoDrawStickman(true),
+	mDoDrawLeftMarker(false),
+	mDoDrawRightMarker(false),
 
 	mBroadphase(new btDbvtBroadphase()),
 	mCollisionConfiguration(new btDefaultCollisionConfiguration()),
 	mDispatcher(new btCollisionDispatcher(mCollisionConfiguration)),
 	mSolver(new btSequentialImpulseConstraintSolver),
 	mDynamicsWorld(new btDiscreteDynamicsWorld(mDispatcher, mBroadphase,
-			mSolver, mCollisionConfiguration))
+			mSolver, mCollisionConfiguration)),
+
+	mDebugLevel(0),
+	mDebugDrawer(new GLDebugDrawer)
 {
 	qDebug() << "GLWidget ctor";
 	gluQuadricNormals(mQuadric, GLU_SMOOTH);
@@ -77,7 +83,6 @@ GLWidget::GLWidget(QWidget *parent) :
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
 
-	mDebugDrawer = new GLDebugDrawer;
 	mDynamicsWorld->setDebugDrawer(mDebugDrawer);
 }
 
@@ -293,8 +298,12 @@ void GLWidget::paintGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 
-	mDebugDrawer->setDebugMode(1);
 	mDynamicsWorld->debugDrawWorld();
+}
+
+void GLWidget::setDebugLevel(int level)
+{
+	mDebugDrawer->setDebugMode(level);
 }
 
 void GLWidget::timeout()

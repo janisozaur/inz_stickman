@@ -21,7 +21,14 @@
        <enum>QLayout::SetMinimumSize</enum>
       </property>
       <item>
-       <widget class="GLWidget" name="displayWidget" native="true"/>
+       <widget class="GLWidget" name="displayWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -290,48 +297,42 @@
       <property name="title">
        <string>Draw</string>
       </property>
-      <widget class="QCheckBox" name="drawStickmanCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Draw stickman</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="drawRightMarkerCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>40</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Draw right marker</string>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="drawLeftMarkerCheckBox">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>60</y>
-         <width>151</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Draw left marker</string>
-       </property>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="drawStickmanCheckBox">
+         <property name="text">
+          <string>Draw stickman</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="drawRightMarkerCheckBox">
+         <property name="text">
+          <string>Draw right marker</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="drawLeftMarkerCheckBox">
+         <property name="text">
+          <string>Draw left marker</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Debug drawer debug level:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="spinBox"/>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>
@@ -409,6 +410,7 @@
     <slot>setDrawStickman(bool)</slot>
     <slot>setDrawRightMarker(bool)</slot>
     <slot>setDrawLeftMarker(bool)</slot>
+    <slot>setDebugLevel(int)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -507,6 +509,22 @@
     <hint type="destinationlabel">
      <x>126</x>
      <y>91</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDebugLevel(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>299</x>
+     <y>572</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>99</y>
     </hint>
    </hints>
   </connection>
