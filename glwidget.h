@@ -7,6 +7,9 @@
 #include <QVector3D>
 #include <QMatrix4x4>
 #include <QFlags>
+#include <bullet/btBulletDynamicsCommon.h>
+
+class GLDebugDrawer;
 
 class GLWidget : public QGLWidget
 {
@@ -68,6 +71,16 @@ private:
 	bool mDebugEnabled;
 	Calibration mRightCalibration, mLeftCalibration;
 	bool mDoDrawStickman, mDoDrawLeftMarker, mDoDrawRightMarker;
+
+	// Bullet Physics variables, as seen on
+	// http://www.bulletphysics.org/mediawiki-1.5.8/index.php?title=Hello_World
+	btBroadphaseInterface *mBroadphase;
+	btDefaultCollisionConfiguration *mCollisionConfiguration;
+	btCollisionDispatcher *mDispatcher;
+	btSequentialImpulseConstraintSolver *mSolver;
+	btDiscreteDynamicsWorld *mDynamicsWorld;
+
+	GLDebugDrawer *mDebugDrawer;
 
 protected:
 	void initializeGL();
