@@ -113,6 +113,99 @@ void GLWidget::resizeGL(int w, int h)
 	qDebug() << "resize (" << w << ", " << h << ")";
 }
 
+void GLWidget::drawStickman()
+{
+	glPushMatrix();
+		glRotatef(90, 1, 0, 0);
+		//glRotatef(mRotation, 1, 0, 0);
+
+		// torso
+		gluCylinder(mQuadric, 3, 4, 9, 32, 2);
+
+		// one leg
+		glPushMatrix();
+			glTranslatef(1.5, 0, 9);
+			gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
+		glPopMatrix();
+
+		// other leg
+		glPushMatrix();
+			glTranslatef(-1.5, 0, 9);
+			gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
+		glPopMatrix();
+
+		// right arm
+		glPushMatrix();
+			glRotatef(90, 1, 0, 0);
+			glTranslatef(3, 0, 0);
+			glRotatef(90 - mRightArmLeftRightDegrees, 0, 1, 0);
+			if (!std::isnan(mRightArmUpDownDegrees)) {
+				glRotatef(mRightArmUpDownDegrees, 1, 0, 0);
+			}
+			glRotatef(90, 0, 1, 0);
+			if (!std::isnan(mRightArmFoldDegrees)) {
+				glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
+			}
+			gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+
+			glPushMatrix();
+				glTranslatef(0, 0, 4.5);
+				//glRotatef(-90, 0, 1, 0);
+				if (!std::isnan(mRightArmFoldDegrees)) {
+					glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
+				}
+				gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+			glPopMatrix();
+
+		glPopMatrix();
+
+		// left arm
+		glPushMatrix();
+			glRotatef(-90, 1, 0, 0);
+			glTranslatef(-3, 0, 0);
+			glRotatef(90, 0, 1, 0);
+			glRotatef(mLeftArmLeftRightDegrees, 0, 1, 0);
+			if (!std::isnan(mLeftArmUpDownDegrees)) {
+				glRotatef(-mLeftArmUpDownDegrees, 1, 0, 0);
+			}
+			if (!std::isnan(mLeftArmFoldDegrees)) {
+				glRotatef(mLeftArmFoldDegrees, 0, 1, 0);
+			}
+			gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+
+			glPushMatrix();
+				glTranslatef(0, 0, 4.5);
+				//glRotatef(-90, 0, 1, 0);
+				if (!std::isnan(mLeftArmFoldDegrees)) {
+					glRotatef(-2 * mLeftArmFoldDegrees, 0, 1, 0);
+				}
+				gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+			glPopMatrix();
+
+		glPopMatrix();
+
+		// head
+		glTranslatef(0, 0, -4);
+		//gluSphere(mQuadric, 4, 32, 32);
+
+	glPopMatrix();
+}
+
+void GLWidget::setDrawStickman(bool draw)
+{
+	mDoDrawStickman = draw;
+}
+
+void GLWidget::setDrawRightMarker(bool draw)
+{
+	mDoDrawRightMarker = draw;
+}
+
+void GLWidget::setDrawLeftMarker(bool draw)
+{
+	mDoDrawLeftMarker = draw;
+}
+
 void GLWidget::paintGL()
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -124,86 +217,23 @@ void GLWidget::paintGL()
 			  0, 0, 0,
 			  0, 1, 0);
 
-	glPushMatrix();
-	glRotatef(90, 1, 0, 0);
-	//glRotatef(mRotation, 1, 0, 0);
+	if (mDoDrawStickman) {
+		drawStickman();
+	}
 
-	// torso
-	gluCylinder(mQuadric, 3, 4, 9, 32, 2);
-
-	// one leg
-	glPushMatrix();
-		glTranslatef(1.5, 0, 9);
-		gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
-	glPopMatrix();
-
-	// other leg
-	glPushMatrix();
-		glTranslatef(-1.5, 0, 9);
-		gluCylinder(mQuadric, 1, 1.3, 9, 20, 2);
-	glPopMatrix();
-
-	// right arm
-	glPushMatrix();
-		glRotatef(90, 1, 0, 0);
-		glTranslatef(3, 0, 0);
-		glRotatef(90 - mRightArmLeftRightDegrees, 0, 1, 0);
-		if (!std::isnan(mRightArmUpDownDegrees)) {
-			glRotatef(mRightArmUpDownDegrees, 1, 0, 0);
-		}
-		glRotatef(90, 0, 1, 0);
-		if (!std::isnan(mRightArmFoldDegrees)) {
-			glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
-		}
-		gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
-
+	if (mDoDrawLeftMarker) {
 		glPushMatrix();
-			glTranslatef(0, 0, 4.5);
-			//glRotatef(-90, 0, 1, 0);
-			if (!std::isnan(mRightArmFoldDegrees)) {
-				glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
-			}
-			gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+		glTranslatef(mLeftPos.x(), mLeftPos.y(), mLeftPos.z());
+		gluSphere(mQuadric, 3, 5, 5);
 		glPopMatrix();
+	}
 
-	glPopMatrix();
-
-	// left arm
-	glPushMatrix();
-		glRotatef(-90, 1, 0, 0);
-		glTranslatef(-3, 0, 0);
-		glRotatef(90, 0, 1, 0);
-		glRotatef(mLeftArmLeftRightDegrees, 0, 1, 0);
-		if (!std::isnan(mLeftArmUpDownDegrees)) {
-			glRotatef(-mLeftArmUpDownDegrees, 1, 0, 0);
-		}
-		if (!std::isnan(mLeftArmFoldDegrees)) {
-			glRotatef(mLeftArmFoldDegrees, 0, 1, 0);
-		}
-		gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
-
+	if (mDoDrawRightMarker) {
 		glPushMatrix();
-			glTranslatef(0, 0, 4.5);
-			//glRotatef(-90, 0, 1, 0);
-			if (!std::isnan(mLeftArmFoldDegrees)) {
-				glRotatef(-2 * mLeftArmFoldDegrees, 0, 1, 0);
-			}
-			gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+		glTranslatef(mRightPos.x(), mRightPos.y(), mRightPos.z());
+		gluSphere(mQuadric, 3, 5, 5);
 		glPopMatrix();
-
-	glPopMatrix();
-
-	// head
-	glTranslatef(0, 0, -4);
-	//gluSphere(mQuadric, 4, 32, 32);
-
-	glPopMatrix();
-
-	glPushMatrix();
-	glTranslatef(mLeftPos.x(), mLeftPos.y(), mLeftPos.z());
-	//glTranslatef(mRightPos.x(), mRightPos.y(), mRightPos.z());
-	gluSphere(mQuadric, 3, 5, 5);
-	glPopMatrix();
+	}
 
 	QVector3D xAxis(5, 0, 0), yAxis(0, 5, 0), zAxis(0, 0, 5);
 	xAxis = mRightTransform * xAxis;

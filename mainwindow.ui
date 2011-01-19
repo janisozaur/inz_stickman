@@ -286,6 +286,55 @@
      </layout>
     </item>
     <item>
+     <widget class="QGroupBox" name="drawSettingsGroupBox">
+      <property name="title">
+       <string>Draw</string>
+      </property>
+      <widget class="QCheckBox" name="drawStickmanCheckBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Draw stickman</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="drawRightMarkerCheckBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Draw right marker</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="drawLeftMarkerCheckBox">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>151</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Draw left marker</string>
+       </property>
+      </widget>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QCheckBox" name="debugEnableCheckBox">
@@ -357,6 +406,9 @@
    <slots>
     <slot>toggleDebugEnable(bool)</slot>
     <slot>setDebugInterval(int)</slot>
+    <slot>setDrawStickman(bool)</slot>
+    <slot>setDrawRightMarker(bool)</slot>
+    <slot>setDrawLeftMarker(bool)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -369,12 +421,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>275</x>
-     <y>519</y>
+     <x>262</x>
+     <y>674</y>
     </hint>
     <hint type="destinationlabel">
-     <x>420</x>
-     <y>525</y>
+     <x>520</x>
+     <y>677</y>
     </hint>
    </hints>
   </connection>
@@ -385,8 +437,8 @@
    <slot>toggleDebugEnable(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>130</x>
-     <y>524</y>
+     <x>140</x>
+     <y>674</y>
     </hint>
     <hint type="destinationlabel">
      <x>155</x>
@@ -401,12 +453,60 @@
    <slot>setDebugInterval(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>573</x>
-     <y>525</y>
+     <x>520</x>
+     <y>677</y>
     </hint>
     <hint type="destinationlabel">
      <x>525</x>
      <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>drawStickmanCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDrawStickman(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>551</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>263</x>
+     <y>109</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>drawRightMarkerCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDrawRightMarker(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>580</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>79</x>
+     <y>114</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>drawLeftMarkerCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDrawLeftMarker(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>135</x>
+     <y>593</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>126</x>
+     <y>91</y>
     </hint>
    </hints>
   </connection>

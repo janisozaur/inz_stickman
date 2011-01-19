@@ -44,8 +44,13 @@ public slots:
 	void timeout();
 	void toggleDebugEnable(bool enabled);
 	void setDebugInterval(int interval);
+	void setDrawStickman(bool draw);
+	void setDrawLeftMarker(bool draw);
+	void setDrawRightMarker(bool draw);
 
 private:
+	void drawStickman();
+
 	GLfloat *light_ambient, *light_ambient_position, *whiteDiffuseLight,
 			*blackAmbientLight, *whiteSpecularLight;
 	GLUquadric *mQuadric;
@@ -62,6 +67,7 @@ private:
 	int mDebugInterval;
 	bool mDebugEnabled;
 	Calibration mRightCalibration, mLeftCalibration;
+	bool mDoDrawStickman, mDoDrawLeftMarker, mDoDrawRightMarker;
 
 protected:
 	void initializeGL();
