@@ -54,6 +54,7 @@ public slots:
 
 private:
 	void drawStickman();
+	btRigidBody *localCreateRigidBody(float mass, const btTransform& startTransform, btCollisionShape *shape);
 
 	GLfloat *light_ambient, *light_ambient_position, *whiteDiffuseLight,
 			*blackAmbientLight, *whiteSpecularLight;
@@ -62,7 +63,7 @@ private:
 	int mRotation;
 	QTime mTime;
 	QTimer mUpdateTimer;
-	QVector3D mRightPos, mLeftPos;
+	QVector3D mRightPos, mLeftPos, mRightHandPos, mLeftHandPos;
 	QVector3D mYellowNearPos, mYellowFarPos, mBlueNearPos, mBlueFarPos;
 	QVector3D mRightFrontPos, mRightRightPos, mRightZeroPos;
 	float mRightArmUpDownDegrees, mRightArmFoldDegrees, mRightArmLeftRightDegrees;
@@ -80,9 +81,17 @@ private:
 	btCollisionDispatcher *mDispatcher;
 	btSequentialImpulseConstraintSolver *mSolver;
 	btDiscreteDynamicsWorld *mDynamicsWorld;
+	btDefaultMotionState *mLeftHandMotionState, *mRightHandMotionState;
+	btRigidBody::btRigidBodyConstructionInfo *mLeftHandRigidBodyCI, *mRightHandRigidBodyCI;
+	btRigidBody *mLeftHandRigidBody, *mRightHandRigidBody;
+	btCollisionShape *mSphereShape;
+	QTime mPhysicsTime;
+	QTimer mPhysicsTimer;
 
 	int mDebugLevel;
 	GLDebugDrawer *mDebugDrawer;
+
+	btScalar mDefaultContactProcessingThreshold;
 
 protected:
 	void initializeGL();

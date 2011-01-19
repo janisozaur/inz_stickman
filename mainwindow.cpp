@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+	showMaximized();
 	ui->displayWidget->toggleDebugEnable(ui->debugEnableCheckBox->isChecked());
 	ui->displayWidget->setDebugInterval(ui->debugIntervalSpinBox->value());
 

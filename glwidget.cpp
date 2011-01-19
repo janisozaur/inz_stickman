@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #define PI 3.14159265
+#define ARM_LENGTH 4.5
 
 inline int fuzzySign(double d)
 {
@@ -39,20 +40,30 @@ GLWidget::GLWidget(QWidget *parent) :
 	QGLWidget(parent),
 	mQuadric(gluNewQuadric()),
 	mRotation(0),
+	mRightArmLeftRightDegrees(0),
 	mLeftArmLeftRightDegrees(180),
-	mDoDrawStickman(true),
+	mDoDrawStickman(false),
 	mDoDrawLeftMarker(false),
 	mDoDrawRightMarker(false),
 
+	// physics
 	mBroadphase(new btDbvtBroadphase()),
 	mCollisionConfiguration(new btDefaultCollisionConfiguration()),
 	mDispatcher(new btCollisionDispatcher(mCollisionConfiguration)),
 	mSolver(new btSequentialImpulseConstraintSolver),
 	mDynamicsWorld(new btDiscreteDynamicsWorld(mDispatcher, mBroadphase,
 			mSolver, mCollisionConfiguration)),
+	mLeftHandMotionState(new btDefaultMotionState(
+			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)))),
+	mRightHandMotionState(new btDefaultMotionState(
+			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)))),
+	mSphereShape(new btSphereShape(1)),
 
-	mDebugLevel(0),
-	mDebugDrawer(new GLDebugDrawer)
+	// physics debug
+	mDebugLevel(1),
+	mDebugDrawer(new GLDebugDrawer),
+
+	mDefaultContactProcessingThreshold(BT_LARGE_FLOAT)
 {
 	qDebug() << "GLWidget ctor";
 	gluQuadricNormals(mQuadric, GLU_SMOOTH);
@@ -80,27 +91,115 @@ GLWidget::GLWidget(QWidget *parent) :
 	whiteSpecularLight[1] = 0.8;
 	whiteSpecularLight[2] = 0.8;
 	whiteSpecularLight[3] = 1.0;
-	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(timeout()));
+
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
 
+	// left hand physics
+	mLeftHandRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(0,
+									mLeftHandMotionState, mSphereShape);
+	mLeftHandRigidBody = new btRigidBody(*mLeftHandRigidBodyCI);
+	mLeftHandRigidBody->setCollisionFlags(
+									mLeftHandRigidBody->getCollisionFlags() |
+									btCollisionObject::CF_KINEMATIC_OBJECT);
+	mLeftHandRigidBody->setActivationState(DISABLE_DEACTIVATION);
+	mDynamicsWorld->addRigidBody(mLeftHandRigidBody);
+
+	// right hand physics
+	mRightHandRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(0,
+									mRightHandMotionState, mSphereShape);
+	mRightHandRigidBody = new btRigidBody(*mRightHandRigidBodyCI);
+	mRightHandRigidBody->setCollisionFlags(
+									mRightHandRigidBody->getCollisionFlags() |
+									btCollisionObject::CF_KINEMATIC_OBJECT);
+	mRightHandRigidBody->setActivationState(DISABLE_DEACTIVATION);
+	mDynamicsWorld->addRigidBody(mLeftHandRigidBody);
+
 	mDynamicsWorld->setDebugDrawer(mDebugDrawer);
+
+	{
+		// create a universal joint using generic 6DOF constraint
+		// create two rigid bodies
+		// static bodyA (parent) on top:
+		btCollisionShape *shape = new btBoxShape(btVector3(1, 1, 1));
+		btTransform tr;
+		tr.setIdentity();
+		tr.setOrigin(btVector3(btScalar(0.), btScalar(4.), btScalar(-5.)));
+		btRigidBody *pBodyA = localCreateRigidBody(0.0, tr, shape);
+		pBodyA->setActivationState(DISABLE_DEACTIVATION);
+		// dynamic bodyB (child) below it :
+		tr.setIdentity();
+		tr.setOrigin(btVector3(btScalar(0.), btScalar(0.), btScalar(-5.)));
+		btRigidBody *pBodyB = localCreateRigidBody(1.0, tr, shape);
+		pBodyB->setActivationState(DISABLE_DEACTIVATION);
+		// add some (arbitrary) data to build constraint frames
+		btVector3 parentAxis(1.f, 0.f, 0.f);
+		btVector3 childAxis(0.f, 0.f, 1.f);
+		btVector3 anchor(0.f, 2.f, 0.f);
+
+		btUniversalConstraint *pUniv = new btUniversalConstraint(*pBodyA, *pBodyB, anchor, parentAxis, childAxis);
+		pUniv->setLowerLimit(-SIMD_HALF_PI * 0.5f, -SIMD_HALF_PI * 0.5f);
+		pUniv->setUpperLimit(SIMD_HALF_PI * 0.5f,  SIMD_HALF_PI * 0.5f);
+		// add constraint to world
+		mDynamicsWorld->addConstraint(pUniv, true);
+		// draw constraint frames and limits for debugging
+		pUniv->setDbgDrawSize(btScalar(5.f));
+	}
+	setDebugLevel(mDebugLevel);
+	connect(&mPhysicsTimer, SIGNAL(timeout()), this, SLOT(timeout()));
+	mPhysicsTimer.start(15);
+	mPhysicsTime.start();
 }
 
 GLWidget::~GLWidget()
 {
 	gluDeleteQuadric(mQuadric);
-	delete light_ambient;
-	delete light_ambient_position;
-	delete whiteDiffuseLight;
-	delete blackAmbientLight;
-	delete whiteSpecularLight;
+	delete [] light_ambient;
+	delete [] light_ambient_position;
+	delete [] whiteDiffuseLight;
+	delete [] blackAmbientLight;
+	delete [] whiteSpecularLight;
 
+	delete mRightHandMotionState;
+	delete mLeftHandMotionState;
+	delete mSphereShape;
 	delete mBroadphase;
 	delete mCollisionConfiguration;
 	delete mDispatcher;
 	delete mSolver;
 	delete mDynamicsWorld;
 	delete mDebugDrawer;
+}
+
+void GLWidget::timeout()
+{
+	int elapsed = mPhysicsTime.restart();
+	float coef = float(elapsed) / mPhysicsTimer.interval();
+	mDynamicsWorld->stepSimulation((float)elapsed / 1000.f, 5);
+}
+
+btRigidBody *GLWidget::localCreateRigidBody(float mass, const btTransform &startTransform, btCollisionShape *shape)
+{
+	btAssert(!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+
+	btVector3 localInertia(0,0,0);
+	if (isDynamic) {
+		shape->calculateLocalInertia(mass, localInertia);
+	}
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState *myMotionState = new btDefaultMotionState(startTransform);
+
+	btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
+
+	btRigidBody *body = new btRigidBody(cInfo);
+	body->setContactProcessingThreshold(mDefaultContactProcessingThreshold);
+
+	mDynamicsWorld->addRigidBody(body);
+
+	return body;
 }
 
 void GLWidget::initializeGL()
@@ -168,15 +267,15 @@ void GLWidget::drawStickman()
 			if (!std::isnan(mRightArmFoldDegrees)) {
 				glRotatef(-(90 - mRightArmFoldDegrees), 0, 1, 0);
 			}
-			gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+			gluCylinder(mQuadric, 1, 0.9, ARM_LENGTH, 20, 2);
 
 			glPushMatrix();
-				glTranslatef(0, 0, 4.5);
+				glTranslatef(0, 0, ARM_LENGTH);
 				//glRotatef(-90, 0, 1, 0);
 				if (!std::isnan(mRightArmFoldDegrees)) {
 					glRotatef(-2 * mRightArmFoldDegrees, 0, 1, 0);
 				}
-				gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+				gluCylinder(mQuadric, 0.9, 0.8, ARM_LENGTH, 20, 2);
 			glPopMatrix();
 
 		glPopMatrix();
@@ -193,15 +292,15 @@ void GLWidget::drawStickman()
 			if (!std::isnan(mLeftArmFoldDegrees)) {
 				glRotatef(mLeftArmFoldDegrees, 0, 1, 0);
 			}
-			gluCylinder(mQuadric, 1, 0.9, 4.5, 20, 2);
+			gluCylinder(mQuadric, 1, 0.9, ARM_LENGTH, 20, 2);
 
 			glPushMatrix();
-				glTranslatef(0, 0, 4.5);
+				glTranslatef(0, 0, ARM_LENGTH);
 				//glRotatef(-90, 0, 1, 0);
 				if (!std::isnan(mLeftArmFoldDegrees)) {
 					glRotatef(-2 * mLeftArmFoldDegrees, 0, 1, 0);
 				}
-				gluCylinder(mQuadric, 0.9, 0.8, 4.5, 20, 2);
+				gluCylinder(mQuadric, 0.9, 0.8, ARM_LENGTH, 20, 2);
 			glPopMatrix();
 
 		glPopMatrix();
@@ -306,14 +405,6 @@ void GLWidget::setDebugLevel(int level)
 	mDebugDrawer->setDebugMode(level);
 }
 
-void GLWidget::timeout()
-{
-	int elapsed = mTime.restart();
-	mRotation += (elapsed / (float)mUpdateTimer.interval()) * 2.0f;
-	mRotation = mRotation % 360;
-
-}
-
 void GLWidget::moveRight(const QVector3D &pos)
 {
 	switch (mRightCalibration) {
@@ -343,6 +434,19 @@ void GLWidget::moveRight(const QVector3D &pos)
 							 << mRightArmLeftRightDegrees;
 					count = 0;
 				}
+
+				QMatrix4x4 m;
+				m.rotate(90, 1, 0, 0);
+				m.translate(3, 0, 0);
+				m.rotate(90 - mRightArmLeftRightDegrees, 0, 1, 0);
+				m.rotate(mRightArmUpDownDegrees, 1, 0, 0);
+				m.rotate(90, 0, 1, 0);
+				m.rotate(-(90 - mRightArmFoldDegrees), 0, 1, 0);
+				m.translate(0, 0, ARM_LENGTH);
+				m.rotate(-2 * mRightArmFoldDegrees, 0, 1, 0);
+				m.translate(0, 0, ARM_LENGTH);
+				QVector3D v;
+				mRightHandPos = m * v;
 			}
 		// fall-through
 		case None:
@@ -389,6 +493,19 @@ void GLWidget::moveLeft(const QVector3D &pos)
 								 << mLeftArmLeftRightDegrees;
 						count = 0;
 					}
+
+					QMatrix4x4 m;
+					m.rotate(-90, 1, 0, 0);
+					m.translate(-3, 0, 0);
+					m.rotate(90, 0, 1, 0);
+					m.rotate(mLeftArmLeftRightDegrees, 0, 1, 0);
+					m.rotate(-mLeftArmUpDownDegrees, 1, 0, 0);
+					m.rotate(mLeftArmFoldDegrees, 0, 1, 0);
+					m.translate(0, 0, ARM_LENGTH);
+					m.rotate(-2 * mLeftArmFoldDegrees, 0, 1, 0);
+					m.translate(0, 0, ARM_LENGTH);
+					QVector3D v;
+					mLeftHandPos = m * v;
 				}
 			// fall-through
 			case None:
