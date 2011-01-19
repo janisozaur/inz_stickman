@@ -1,4 +1,5 @@
 #include "glwidget.h"
+#include "gldebugdrawer.h"
 
 #include <cmath>
 
@@ -38,7 +39,14 @@ GLWidget::GLWidget(QWidget *parent) :
 	QGLWidget(parent),
 	mQuadric(gluNewQuadric()),
 	mRotation(0),
-	mLeftArmLeftRightDegrees(180)
+	mLeftArmLeftRightDegrees(180),
+
+	mBroadphase(new btDbvtBroadphase()),
+	mCollisionConfiguration(new btDefaultCollisionConfiguration()),
+	mDispatcher(new btCollisionDispatcher(mCollisionConfiguration)),
+	mSolver(new btSequentialImpulseConstraintSolver),
+	mDynamicsWorld(new btDiscreteDynamicsWorld(mDispatcher, mBroadphase,
+			mSolver, mCollisionConfiguration))
 {
 	qDebug() << "GLWidget ctor";
 	gluQuadricNormals(mQuadric, GLU_SMOOTH);
@@ -68,7 +76,9 @@ GLWidget::GLWidget(QWidget *parent) :
 	whiteSpecularLight[3] = 1.0;
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 	connect(&mUpdateTimer, SIGNAL(timeout()), this, SLOT(updateGL()));
-	//mRightArmDegrees = 90;
+
+	mDebugDrawer = new GLDebugDrawer;
+	mDynamicsWorld->setDebugDrawer(mDebugDrawer);
 }
 
 GLWidget::~GLWidget()
@@ -79,6 +89,13 @@ GLWidget::~GLWidget()
 	delete whiteDiffuseLight;
 	delete blackAmbientLight;
 	delete whiteSpecularLight;
+
+	delete mBroadphase;
+	delete mCollisionConfiguration;
+	delete mDispatcher;
+	delete mSolver;
+	delete mDynamicsWorld;
+	delete mDebugDrawer;
 }
 
 void GLWidget::initializeGL()
@@ -275,6 +292,9 @@ void GLWidget::paintGL()
 	glEnd();*/
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
+
+	mDebugDrawer->setDebugMode(1);
+	mDynamicsWorld->debugDrawWorld();
 }
 
 void GLWidget::timeout()
