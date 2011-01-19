@@ -123,12 +123,12 @@ GLWidget::GLWidget(QWidget *parent) :
 		btCollisionShape *shape = new btBoxShape(btVector3(1, 1, 1));
 		btTransform tr;
 		tr.setIdentity();
-		tr.setOrigin(btVector3(btScalar(0.), btScalar(4.), btScalar(-5.)));
+		tr.setOrigin(btVector3(btScalar(0.), btScalar(4.), btScalar(-10.)));
 		btRigidBody *pBodyA = localCreateRigidBody(0.0, tr, shape);
 		pBodyA->setActivationState(DISABLE_DEACTIVATION);
 		// dynamic bodyB (child) below it :
 		tr.setIdentity();
-		tr.setOrigin(btVector3(btScalar(0.), btScalar(0.), btScalar(-5.)));
+		tr.setOrigin(btVector3(btScalar(0.), btScalar(0.), btScalar(-10.)));
 		btRigidBody *pBodyB = localCreateRigidBody(1.0, tr, shape);
 		pBodyB->setActivationState(DISABLE_DEACTIVATION);
 		// add some (arbitrary) data to build constraint frames
@@ -152,22 +152,30 @@ GLWidget::GLWidget(QWidget *parent) :
 
 GLWidget::~GLWidget()
 {
+	qDebug() << "GLWidget::~GLWidget";
 	gluDeleteQuadric(mQuadric);
+
 	delete [] light_ambient;
 	delete [] light_ambient_position;
 	delete [] whiteDiffuseLight;
 	delete [] blackAmbientLight;
 	delete [] whiteSpecularLight;
 
-	delete mRightHandMotionState;
+	delete mLeftHandRigidBody;
+	delete mLeftHandRigidBodyCI;
 	delete mLeftHandMotionState;
+
+	delete mRightHandRigidBody;
+	delete mRightHandRigidBodyCI;
+	delete mRightHandMotionState;
+
 	delete mSphereShape;
 	delete mBroadphase;
 	delete mCollisionConfiguration;
 	delete mDispatcher;
 	delete mSolver;
-	delete mDynamicsWorld;
 	delete mDebugDrawer;
+	//delete mDynamicsWorld;
 }
 
 void GLWidget::timeout()
