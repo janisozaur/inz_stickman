@@ -92,6 +92,7 @@ private:
 	btRigidBody::btRigidBodyConstructionInfo mGroundRigidBodyCI;
 	btRigidBody* mGroundRigidBody;
 	QVector<btRigidBody *> mBoxes;
+	btCollisionShape *mColShape;
 	QTime mPhysicsTime;
 	QTimer mPhysicsTimer;
 
