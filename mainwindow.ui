@@ -85,7 +85,11 @@
             <widget class="QLineEdit" name="portNameLineEdit"/>
            </item>
            <item>
-            <widget class="QComboBox" name="portBaudRateComboBox"/>
+            <widget class="QComboBox" name="portBaudRateComboBox">
+             <property name="sizeAdjustPolicy">
+              <enum>QComboBox::AdjustToContents</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
