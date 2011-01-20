@@ -13,7 +13,7 @@
 #define ARRAY_SIZE_Z 5
 #define START_POS_X -5
 #define START_POS_Y -3
-#define START_POS_Z 15
+#define START_POS_Z -7
 
 inline int fuzzySign(double d)
 {
@@ -592,9 +592,11 @@ void GLWidget::moveRight(const QVector3D &pos)
 	switch (mRightCalibration) {
 		case Regular:
 			{
-				// FIXME: this should use Y axis and is the current state only
-				// for testing
+#ifdef HORIZONTAL
 				float y = pos.z() - mYellowNearPos.z();
+#else
+				float y = mYellowNearPos.y() - pos.y();
+#endif
 				float l = (pos - mYellowNearPos).length();
 				mRightArmUpDownDegrees = 360 * -acos(y / l) * M_1_PI / 2;
 				mRightArmUpDownDegrees = 90 - mRightArmUpDownDegrees + 180;
@@ -604,11 +606,22 @@ void GLWidget::moveRight(const QVector3D &pos)
 				mRightArmFoldDegrees = qBound(0.0f, mRightArmFoldDegrees, 90.0f);
 				// FIXME: this should perhaps use some other axis and is the
 				// current state only for testing
+#ifdef HORIZONTAL
 				float desiredZ = (mYellowNearPos - mYellowFarPos).x();
+#else
+				float desiredZ = (mYellowFarPos - mYellowNearPos).z();
+#endif
 				desiredZ = acos(desiredZ / armLength) * 360 * M_1_PI / 2;
+#ifdef HORIZONTAL
 				float z = (pos - mYellowFarPos).y();
+#else
+				float z = (mYellowFarPos - pos).x();
+#endif
 				z = asin(z / armLength) * 360 * M_1_PI / 2;
 				mRightArmLeftRightDegrees = z - desiredZ + 90;
+#ifndef HORIZONTAL
+				mRightArmLeftRightDegrees += 180;
+#endif
 				if (mDebugEnabled && count++ >= mDebugInterval) {
 					qDebug() << "y:" << y << "l:" << l << "length" << armLength;
 					qDebug() << "right arm up/down" << mRightArmUpDownDegrees << "right arm fold"
@@ -650,61 +663,72 @@ void GLWidget::moveRight(const QVector3D &pos)
 void GLWidget::moveLeft(const QVector3D &pos)
 {
 	switch (mLeftCalibration) {
-			case Regular:
-				{
-					// FIXME: this should use Y axis and is the current state only
-					// for testing
-					float y = pos.z() - mBlueNearPos.z();
-					float l = (pos - mBlueNearPos).length();
-					mLeftArmUpDownDegrees = 360 * -acos(y / l) * M_1_PI / 2;
-					mLeftArmUpDownDegrees = 90 - mLeftArmUpDownDegrees + 180;
-					static int count = 0;
-					float armLength = (mBlueFarPos - mBlueNearPos).length();
-					mLeftArmFoldDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
-					mLeftArmFoldDegrees = qBound(0.0f, mLeftArmFoldDegrees, 90.0f);
-					// FIXME: this should perhaps use some other axis and is the
-					// current state only for testing
-					float desiredZ = (mBlueNearPos - mBlueFarPos).x();
-					desiredZ = acos(desiredZ / armLength) * 360 * M_1_PI / 2;
-					float z = (pos - mBlueFarPos).y();
-					z = asin(z / armLength) * 360 * M_1_PI / 2;
-					mLeftArmLeftRightDegrees = z - desiredZ + 90;
-					if (mDebugEnabled && count++ >= mDebugInterval) {
-						qDebug() << "y:" << y << "l:" << l << "length" << armLength;
-						qDebug() << "left arm up/down" << mLeftArmUpDownDegrees << " left arm fold"
-								 << mLeftArmFoldDegrees << "left arm left/right"
-								 << mLeftArmLeftRightDegrees;
-						count = 0;
-					}
-
-					QMatrix4x4 m;
-					m.rotate(90, 1, 0, 0);
-					m.rotate(-90, 1, 0, 0);
-					m.translate(-3, 0, 0);
-					m.rotate(90, 0, 1, 0);
-					m.rotate(mLeftArmLeftRightDegrees, 0, 1, 0);
-					m.rotate(-mLeftArmUpDownDegrees, 1, 0, 0);
-					m.rotate(mLeftArmFoldDegrees, 0, 1, 0);
-					m.translate(0, 0, ARM_LENGTH);
-					m.rotate(-2 * mLeftArmFoldDegrees, 0, 1, 0);
-					m.translate(0, 0, ARM_LENGTH);
-					QVector3D v;
-					mLeftHandPos = m * v;
+		case Regular:
+			{
+#ifdef HORIZONTAL
+				float y = pos.z() - mBlueNearPos.z();
+#else
+				float y = mBlueNearPos.y() - pos.y();
+#endif
+				float l = (pos - mBlueNearPos).length();
+				mLeftArmUpDownDegrees = 360 * -acos(y / l) * M_1_PI / 2;
+				mLeftArmUpDownDegrees = 90 - mLeftArmUpDownDegrees + 180;
+				static int count = 0;
+				float armLength = (mBlueFarPos - mBlueNearPos).length();
+				mLeftArmFoldDegrees = 360 * acos(l / armLength) * M_1_PI / 2;
+				mLeftArmFoldDegrees = qBound(0.0f, mLeftArmFoldDegrees, 90.0f);
+#ifdef HORIZONTAL
+				float desiredZ = (mBlueNearPos - mBlueFarPos).x();
+#else
+				float desiredZ = (mBlueFarPos - mBlueNearPos).z();
+#endif
+				desiredZ = acos(desiredZ / armLength) * 360 * M_1_PI / 2;
+#ifdef HORIZONTAL
+				float z = (pos - mBlueFarPos).y();
+#else
+				float z = (mBlueFarPos - pos).x();
+#endif
+				z = asin(z / armLength) * 360 * M_1_PI / 2;
+				mLeftArmLeftRightDegrees = z - desiredZ + 90;
+#ifndef HORIZONTAL
+				mLeftArmLeftRightDegrees += 180;
+#endif
+				if (mDebugEnabled && count++ >= mDebugInterval) {
+					qDebug() << "y:" << y << "l:" << l << "length" << armLength;
+					qDebug() << "left arm up/down" << mLeftArmUpDownDegrees << " left arm fold"
+							 << mLeftArmFoldDegrees << "left arm left/right"
+							 << mLeftArmLeftRightDegrees;
+					count = 0;
 				}
-			// fall-through
-			case None:
-				mLeftPos = pos;
-				break;
-			case Experimental:
-				mRightPos = mLeftTransform * pos;
-				break;
-		}
 
-		static int count = 0;
-		if (mDebugEnabled && count++ >= mDebugInterval) {
-			qDebug() << "left pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
-			count = 0;
-		}
+				QMatrix4x4 m;
+				m.rotate(90, 1, 0, 0);
+				m.rotate(-90, 1, 0, 0);
+				m.translate(-3, 0, 0);
+				m.rotate(90, 0, 1, 0);
+				m.rotate(mLeftArmLeftRightDegrees, 0, 1, 0);
+				m.rotate(-mLeftArmUpDownDegrees, 1, 0, 0);
+				m.rotate(mLeftArmFoldDegrees, 0, 1, 0);
+				m.translate(0, 0, ARM_LENGTH);
+				m.rotate(-2 * mLeftArmFoldDegrees, 0, 1, 0);
+				m.translate(0, 0, ARM_LENGTH);
+				QVector3D v;
+				mLeftHandPos = m * v;
+			}
+		// fall-through
+		case None:
+			mLeftPos = pos;
+			break;
+		case Experimental:
+			mRightPos = mLeftTransform * pos;
+			break;
+	}
+
+	static int count = 0;
+	if (mDebugEnabled && count++ >= mDebugInterval) {
+		qDebug() << "left pos:" << pos << "transformed:" << mRightTransform * pos << "inverted:" << mRightTransform.inverted() * pos;
+		count = 0;
+	}
 }
 
 void GLWidget::setYellowNearPos(const QVector3D &pos)
