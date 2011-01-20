@@ -51,6 +51,7 @@ public slots:
 	void setDrawLeftMarker(bool draw);
 	void setDrawRightMarker(bool draw);
 	void setDebugLevel(int level);
+	void resetBoxes();
 
 private:
 	void drawStickman();
@@ -89,6 +90,7 @@ private:
 	btDefaultMotionState* mGroundMotionState;
 	btRigidBody::btRigidBodyConstructionInfo mGroundRigidBodyCI;
 	btRigidBody* mGroundRigidBody;
+	QVector<btRigidBody *> mBoxes;
 	QTime mPhysicsTime;
 	QTimer mPhysicsTimer;
 

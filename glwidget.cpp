@@ -129,42 +129,10 @@ GLWidget::GLWidget(QWidget *parent) :
 
 	mDynamicsWorld->setDebugDrawer(mDebugDrawer);
 
-
-	btCollisionShape *colShape = new btBoxShape(btVector3(1, 1, 1));
-	btTransform startTransform;
-	startTransform.setIdentity();
-	btVector3 localInertia(0,0,0);
-	btScalar mass(1.f);
-	colShape->calculateLocalInertia(mass, localInertia);
-
-	float start_x = START_POS_X - ARRAY_SIZE_X/2;
-	float start_y = START_POS_Y;
-	float start_z = START_POS_Z - ARRAY_SIZE_Z/2;
-
-	for (int k=0;k<ARRAY_SIZE_Y;k++)
-	{
-		for (int i=0;i<ARRAY_SIZE_X;i++)
-		{
-			for(int j = 0;j<ARRAY_SIZE_Z;j++)
-			{
-				startTransform.setOrigin(btVector3(
-									btScalar(2.0*i + start_x),
-									btScalar(2.0*k + start_y),
-									btScalar(2.0*j + start_z)));
-				//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-				btDefaultMotionState *myMotionState = new btDefaultMotionState(startTransform);
-				btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
-				btRigidBody *body = new btRigidBody(rbInfo);
-
-				body->setActivationState(ISLAND_SLEEPING);
-
-				mDynamicsWorld->addRigidBody(body);
-				body->setActivationState(ISLAND_SLEEPING);
-			}
-		}
-	}
 	mRightHandPos = QVector3D(0, 0, 15);
 	mLeftHandPos = QVector3D(0, 0, 15);
+
+	resetBoxes();
 
 	setDebugLevel(mDebugLevel);
 	connect(&mPhysicsTimer, SIGNAL(timeout()), this, SLOT(timeout()));
@@ -198,6 +166,49 @@ GLWidget::~GLWidget()
 	delete mSolver;
 	delete mDebugDrawer;
 	//delete mDynamicsWorld;
+}
+
+void GLWidget::resetBoxes()
+{
+	qDebug() << "reset";
+	for (int i = 0; i < mBoxes.count(); i++) {
+		mDynamicsWorld->removeRigidBody(mBoxes.at(i));
+		delete mBoxes.at(i)->getMotionState();
+		delete mBoxes.at(i);
+	}
+
+	mBoxes.clear();
+
+	btCollisionShape *colShape = new btBoxShape(btVector3(1, 1, 1));
+	btTransform startTransform;
+	startTransform.setIdentity();
+	btVector3 localInertia(0,0,0);
+	btScalar mass(1.f);
+	colShape->calculateLocalInertia(mass, localInertia);
+	float start_x = START_POS_X - ARRAY_SIZE_X/2;
+	float start_y = START_POS_Y;
+	float start_z = START_POS_Z - ARRAY_SIZE_Z/2;
+
+	for (int k = 0; k < ARRAY_SIZE_Y; k++) {
+		for (int i = 0; i < ARRAY_SIZE_X; i++) {
+			for (int j = 0; j < ARRAY_SIZE_Z; j++) {
+				startTransform.setOrigin(btVector3(
+									btScalar(2.0*i + start_x),
+									btScalar(2.0*k + start_y),
+									btScalar(2.0*j + start_z)));
+				//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+				btDefaultMotionState *myMotionState = new btDefaultMotionState(startTransform);
+				btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+				btRigidBody *body = new btRigidBody(rbInfo);
+				mBoxes.append(body);
+
+				body->setActivationState(ISLAND_SLEEPING);
+
+				mDynamicsWorld->addRigidBody(body);
+				body->setActivationState(ISLAND_SLEEPING);
+			}
+		}
+	}
 }
 
 void GLWidget::timeout()

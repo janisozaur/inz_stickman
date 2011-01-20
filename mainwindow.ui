@@ -336,6 +336,13 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="resetBoxesPushButton">
+         <property name="text">
+          <string>Reset boxes</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -415,6 +422,7 @@
     <slot>setDrawRightMarker(bool)</slot>
     <slot>setDrawLeftMarker(bool)</slot>
     <slot>setDebugLevel(int)</slot>
+    <slot>resetBoxes()</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -428,11 +436,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>262</x>
-     <y>674</y>
+     <y>704</y>
     </hint>
     <hint type="destinationlabel">
      <x>520</x>
-     <y>677</y>
+     <y>707</y>
     </hint>
    </hints>
   </connection>
@@ -444,7 +452,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>140</x>
-     <y>674</y>
+     <y>704</y>
     </hint>
     <hint type="destinationlabel">
      <x>155</x>
@@ -460,7 +468,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>520</x>
-     <y>677</y>
+     <y>707</y>
     </hint>
     <hint type="destinationlabel">
      <x>525</x>
@@ -475,8 +483,8 @@
    <slot>setDrawStickman(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>97</x>
-     <y>551</y>
+     <x>104</x>
+     <y>581</y>
     </hint>
     <hint type="destinationlabel">
      <x>263</x>
@@ -491,8 +499,8 @@
    <slot>setDrawRightMarker(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>83</x>
-     <y>580</y>
+     <x>90</x>
+     <y>620</y>
     </hint>
     <hint type="destinationlabel">
      <x>79</x>
@@ -507,8 +515,8 @@
    <slot>setDrawLeftMarker(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>135</x>
-     <y>593</y>
+     <x>142</x>
+     <y>646</y>
     </hint>
     <hint type="destinationlabel">
      <x>126</x>
@@ -523,12 +531,28 @@
    <slot>setDebugLevel(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>299</x>
-     <y>572</y>
+     <x>432</x>
+     <y>620</y>
     </hint>
     <hint type="destinationlabel">
      <x>346</x>
      <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetBoxesPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>displayWidget</receiver>
+   <slot>resetBoxes()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>601</x>
+     <y>654</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>609</x>
+     <y>188</y>
     </hint>
    </hints>
   </connection>
