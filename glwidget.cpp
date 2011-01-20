@@ -8,12 +8,12 @@
 #define PI 3.14159265
 #define ARM_LENGTH 4.5
 
-#define ARRAY_SIZE_X 5
-#define ARRAY_SIZE_Y 5
+#define ARRAY_SIZE_X 8
+#define ARRAY_SIZE_Y 10
 #define ARRAY_SIZE_Z 5
-#define START_POS_X -5
-#define START_POS_Y -3
-#define START_POS_Z -7
+#define START_POS_X -3
+#define START_POS_Y -5
+#define START_POS_Z -12
 
 inline int fuzzySign(double d)
 {
