@@ -398,6 +398,19 @@ void GLWidget::paintGL()
 			  0, 0, 0,
 			  0, 1, 0);
 
+	// reset colours
+	glBegin(GL_TRIANGLES);
+	{
+		static const float a[4] = {0.7, 0.7, 0.7, 1.0};
+		static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+		static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+		glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+		glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+	}
+	glEnd();
+
 	mDynamicsWorld->debugDrawWorld();
 
 	if (mDoDrawStickman) {
@@ -424,8 +437,108 @@ void GLWidget::paintGL()
 	zAxis = mRightTransform * zAxis;
 	QVector3D zero = mRightTransform * QVector3D();
 
-	glDisable(GL_LIGHTING);
+	for (int i = 0; i < mBoxes.count(); i++) {
+		btTransform t = mBoxes.at(i)->getWorldTransform();
+		btVector3 o = t.getOrigin();
+		btQuaternion r = t.getRotation();
+		glPushMatrix();
+			glTranslatef(o.getX(), o.getY(), o.getZ());
+			glRotatef(r.getAngle() * 360 / (2 * PI), r.getAxis().getX(), r.getAxis().getY(), r.getAxis().getZ());
+			glBegin(GL_QUADS);
+				// front
+				{
+					static const float a[4] = {0.0, 0.0, 1.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(-1, -1, 1);
+				glVertex3f(1, -1, 1);
+				glVertex3f(1, 1, 1);
+				glVertex3f(-1, 1, 1);
 
+				// right
+				{
+					static const float a[4] = {0.0, 1.0, 0.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(1, -1, 1);
+				glVertex3f(1, -1, -1);
+				glVertex3f(1, 1, -1);
+				glVertex3f(1, 1, 1);
+
+				// left
+				{
+					static const float a[4] = {1.0, 0.0, 0.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(-1, -1, -1);
+				glVertex3f(-1, -1, 1);
+				glVertex3f(-1, 1, 1);
+				glVertex3f(-1, 1, -1);
+
+				// back
+				{
+					static const float a[4] = {0.0, 1.0, 1.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(1, -1, -1);
+				glVertex3f(-1, -1, -1);
+				glVertex3f(-1, 1, -1);
+				glVertex3f(1, 1, -1);
+
+				// top
+				{
+					static const float a[4] = {1.0, 0.0, 1.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(-1, 1, 1);
+				glVertex3f(1, 1, 1);
+				glVertex3f(1, 1, -1);
+				glVertex3f(-1, 1, -1);
+
+				// bottom
+				{
+					static const float a[4] = {1.0, 1.0, 0.0, 1.0};
+					static const float d[4] = {0.7, 0.7, 0.7, 1.0};
+					static const float s[4] = {1.0, 1.0, 1.0, 1.0};
+					glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+					glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+					glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+					glMaterialf(GL_FRONT, GL_SHININESS, pow(2, 10.0 * 0.5));
+				}
+				glVertex3f(-1, -1, -1);
+				glVertex3f(1, -1, -1);
+				glVertex3f(1, -1, 1);
+				glVertex3f(-1, -1, 1);
+			glEnd();
+		glPopMatrix();
+	}
+
+	glDisable(GL_LIGHTING);
 	/*glBegin(GL_TRIANGLES); {
 		QVector3D temp;
 		glColor3f(1, 0, 0);
