@@ -69,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
 #ifdef Q_OS_LINUX
 	ui->portNameLineEdit->setText("/dev/ttyUSB0");
 #endif
+#ifdef Q_OS_WIN
+	ui->portNameLineEdit->setText("COM1");
+#endif
 }
 
 MainWindow::~MainWindow()

@@ -6,6 +6,13 @@
 
 #include <QDebug>
 
+#ifndef isnan
+inline bool isnan(double x) {
+	return x != x;
+}
+#endif
+
+
 SamplingThread::SamplingThread(QObject *parent) :
 	QThread(parent),
 	mSamples(SAMPLES_COUNT),

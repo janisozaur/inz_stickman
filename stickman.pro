@@ -28,10 +28,15 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-LIBS += -lQtSerialPort -lBulletDynamics -lBulletCollision -lLinearMath
+LIBS += -lBulletDynamics -lBulletCollision -lLinearMath
 
 unix {
-	LIBS += -L/usr/local/qserialport/lib/
+	LIBS += -L/usr/local/qserialport/lib/ -lQtSerialPort
 	INCLUDEPATH += /usr/local/qserialport/include/QtSerialPort
 	INCLUDEPATH += /usr/local/include/bullet
+}
+
+win32 {
+	LIBS += -lQtSerialPort1
+	INCLUDEPATH += C:\dev\bullet C:\dev\bullet\src C:\MinGW\4.5\include\qtserialport
 }
