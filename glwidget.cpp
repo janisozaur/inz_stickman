@@ -52,6 +52,7 @@ GLWidget::GLWidget(QWidget *parent) :
 	mDoDrawStickman(false),
 	mDoDrawLeftMarker(false),
 	mDoDrawRightMarker(false),
+	mDoDrawBoxes(true),
 
 	// physics
 	mBroadphase(new btDbvtBroadphase()),
@@ -166,6 +167,11 @@ GLWidget::~GLWidget()
 	delete mSolver;
 	delete mDebugDrawer;
 	//delete mDynamicsWorld;
+}
+
+void GLWidget::setDrawBoxes(bool draw)
+{
+	mDoDrawBoxes = draw;
 }
 
 void GLWidget::resetBoxes()
@@ -437,7 +443,7 @@ void GLWidget::paintGL()
 	zAxis = mRightTransform * zAxis;
 	QVector3D zero = mRightTransform * QVector3D();
 
-	for (int i = 0; i < mBoxes.count(); i++) {
+	for (int i = 0; i < mBoxes.count() && mDoDrawBoxes; i++) {
 		btTransform t = mBoxes.at(i)->getWorldTransform();
 		btVector3 o = t.getOrigin();
 		btQuaternion r = t.getRotation();

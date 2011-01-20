@@ -315,31 +315,41 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <widget class="QCheckBox" name="drawLeftMarkerCheckBox">
          <property name="text">
           <string>Draw left marker</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>Debug drawer debug level:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <widget class="QSpinBox" name="spinBox">
          <property name="value">
           <number>1</number>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="2" column="2">
         <widget class="QPushButton" name="resetBoxesPushButton">
          <property name="text">
           <string>Reset boxes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="drawBoxesCheckBox">
+         <property name="text">
+          <string>Draw boxes</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -423,6 +433,7 @@
     <slot>setDrawLeftMarker(bool)</slot>
     <slot>setDebugLevel(int)</slot>
     <slot>resetBoxes()</slot>
+    <slot>setDrawBoxes(bool)</slot>
    </slots>
   </customwidget>
  </customwidgets>
@@ -483,8 +494,8 @@
    <slot>setDrawStickman(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>104</x>
-     <y>581</y>
+     <x>130</x>
+     <y>568</y>
     </hint>
     <hint type="destinationlabel">
      <x>263</x>
@@ -499,8 +510,8 @@
    <slot>setDrawRightMarker(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>90</x>
-     <y>620</y>
+     <x>116</x>
+     <y>598</y>
     </hint>
     <hint type="destinationlabel">
      <x>79</x>
@@ -515,8 +526,8 @@
    <slot>setDrawLeftMarker(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>142</x>
-     <y>646</y>
+     <x>168</x>
+     <y>631</y>
     </hint>
     <hint type="destinationlabel">
      <x>126</x>
@@ -531,8 +542,8 @@
    <slot>setDebugLevel(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>432</x>
-     <y>620</y>
+     <x>771</x>
+     <y>601</y>
     </hint>
     <hint type="destinationlabel">
      <x>346</x>
@@ -547,12 +558,28 @@
    <slot>resetBoxes()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>601</x>
-     <y>654</y>
+     <x>771</x>
+     <y>634</y>
     </hint>
     <hint type="destinationlabel">
      <x>609</x>
      <y>188</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>drawBoxesCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayWidget</receiver>
+   <slot>setDrawBoxes(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>652</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>203</x>
+     <y>141</y>
     </hint>
    </hints>
   </connection>

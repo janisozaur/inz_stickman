@@ -50,6 +50,7 @@ public slots:
 	void setDrawStickman(bool draw);
 	void setDrawLeftMarker(bool draw);
 	void setDrawRightMarker(bool draw);
+	void setDrawBoxes(bool draw);
 	void setDebugLevel(int level);
 	void resetBoxes();
 
@@ -73,7 +74,7 @@ private:
 	int mDebugInterval;
 	bool mDebugEnabled;
 	Calibration mRightCalibration, mLeftCalibration;
-	bool mDoDrawStickman, mDoDrawLeftMarker, mDoDrawRightMarker;
+	bool mDoDrawStickman, mDoDrawLeftMarker, mDoDrawRightMarker, mDoDrawBoxes;
 
 	// Bullet Physics variables, as seen on
 	// http://www.bulletphysics.org/mediawiki-1.5.8/index.php?title=Hello_World
