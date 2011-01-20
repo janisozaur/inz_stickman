@@ -83,8 +83,12 @@ private:
 	btDiscreteDynamicsWorld *mDynamicsWorld;
 	btDefaultMotionState *mLeftHandMotionState, *mRightHandMotionState;
 	btRigidBody::btRigidBodyConstructionInfo *mLeftHandRigidBodyCI, *mRightHandRigidBodyCI;
-	btRigidBody *mLeftHandRigidBody, *mRightHandRigidBody;
+	btRigidBody *mLeftHandRigidBody, *mRightHandRigidBody, *mLowerBag, *mHook;
 	btCollisionShape *mSphereShape;
+	btCollisionShape* mGroundShape;
+	btDefaultMotionState* mGroundMotionState;
+	btRigidBody::btRigidBodyConstructionInfo mGroundRigidBodyCI;
+	btRigidBody* mGroundRigidBody;
 	QTime mPhysicsTime;
 	QTimer mPhysicsTimer;
 

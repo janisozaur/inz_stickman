@@ -8,6 +8,13 @@
 #define PI 3.14159265
 #define ARM_LENGTH 4.5
 
+#define ARRAY_SIZE_X 5
+#define ARRAY_SIZE_Y 5
+#define ARRAY_SIZE_Z 5
+#define START_POS_X -5
+#define START_POS_Y -5
+#define START_POS_Z -3
+
 inline int fuzzySign(double d)
 {
 	int sign;
@@ -54,10 +61,16 @@ GLWidget::GLWidget(QWidget *parent) :
 	mDynamicsWorld(new btDiscreteDynamicsWorld(mDispatcher, mBroadphase,
 			mSolver, mCollisionConfiguration)),
 	mLeftHandMotionState(new btDefaultMotionState(
-			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)))),
+			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 15)))),
 	mRightHandMotionState(new btDefaultMotionState(
-			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)))),
+			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 15)))),
 	mSphereShape(new btSphereShape(1)),
+
+	mGroundShape(new btStaticPlaneShape(btVector3(0, 1, 0), 1)),
+	mGroundMotionState(new btDefaultMotionState(
+			btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -5, 0)))),
+	mGroundRigidBodyCI(0, mGroundMotionState, mGroundShape, btVector3(0, 0, 0)),
+	mGroundRigidBody(new btRigidBody(mGroundRigidBodyCI)),
 
 	// physics debug
 	mDebugLevel(1),
@@ -102,7 +115,6 @@ GLWidget::GLWidget(QWidget *parent) :
 									mLeftHandRigidBody->getCollisionFlags() |
 									btCollisionObject::CF_KINEMATIC_OBJECT);
 	mLeftHandRigidBody->setActivationState(DISABLE_DEACTIVATION);
-	mDynamicsWorld->addRigidBody(mLeftHandRigidBody);
 
 	// right hand physics
 	mRightHandRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(0,
@@ -112,38 +124,48 @@ GLWidget::GLWidget(QWidget *parent) :
 									mRightHandRigidBody->getCollisionFlags() |
 									btCollisionObject::CF_KINEMATIC_OBJECT);
 	mRightHandRigidBody->setActivationState(DISABLE_DEACTIVATION);
-	mDynamicsWorld->addRigidBody(mLeftHandRigidBody);
+
+	mDynamicsWorld->addRigidBody(mGroundRigidBody);
 
 	mDynamicsWorld->setDebugDrawer(mDebugDrawer);
 
-	{
-		// create a universal joint using generic 6DOF constraint
-		// create two rigid bodies
-		// static bodyA (parent) on top:
-		btCollisionShape *shape = new btBoxShape(btVector3(1, 1, 1));
-		btTransform tr;
-		tr.setIdentity();
-		tr.setOrigin(btVector3(btScalar(0.), btScalar(4.), btScalar(-10.)));
-		btRigidBody *pBodyA = localCreateRigidBody(0.0, tr, shape);
-		pBodyA->setActivationState(DISABLE_DEACTIVATION);
-		// dynamic bodyB (child) below it :
-		tr.setIdentity();
-		tr.setOrigin(btVector3(btScalar(0.), btScalar(0.), btScalar(-10.)));
-		btRigidBody *pBodyB = localCreateRigidBody(1.0, tr, shape);
-		pBodyB->setActivationState(DISABLE_DEACTIVATION);
-		// add some (arbitrary) data to build constraint frames
-		btVector3 parentAxis(1.f, 0.f, 0.f);
-		btVector3 childAxis(0.f, 0.f, 1.f);
-		btVector3 anchor(0.f, 2.f, 0.f);
 
-		btUniversalConstraint *pUniv = new btUniversalConstraint(*pBodyA, *pBodyB, anchor, parentAxis, childAxis);
-		pUniv->setLowerLimit(-SIMD_HALF_PI * 0.5f, -SIMD_HALF_PI * 0.5f);
-		pUniv->setUpperLimit(SIMD_HALF_PI * 0.5f,  SIMD_HALF_PI * 0.5f);
-		// add constraint to world
-		mDynamicsWorld->addConstraint(pUniv, true);
-		// draw constraint frames and limits for debugging
-		pUniv->setDbgDrawSize(btScalar(5.f));
+	btCollisionShape *colShape = new btBoxShape(btVector3(1, 1, 1));
+	btTransform startTransform;
+	startTransform.setIdentity();
+	btVector3 localInertia(0,0,0);
+	btScalar mass(1.f);
+	colShape->calculateLocalInertia(mass, localInertia);
+
+	float start_x = START_POS_X - ARRAY_SIZE_X/2;
+	float start_y = START_POS_Y;
+	float start_z = START_POS_Z - ARRAY_SIZE_Z/2;
+
+	for (int k=0;k<ARRAY_SIZE_Y;k++)
+	{
+		for (int i=0;i<ARRAY_SIZE_X;i++)
+		{
+			for(int j = 0;j<ARRAY_SIZE_Z;j++)
+			{
+				startTransform.setOrigin(btVector3(
+									btScalar(2.0*i + start_x),
+									btScalar(2.0*k + start_y),
+									btScalar(2.0*j + start_z)));
+				//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+				btDefaultMotionState *myMotionState = new btDefaultMotionState(startTransform);
+				btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+				btRigidBody *body = new btRigidBody(rbInfo);
+
+				body->setActivationState(ISLAND_SLEEPING);
+
+				mDynamicsWorld->addRigidBody(body);
+				body->setActivationState(ISLAND_SLEEPING);
+			}
+		}
 	}
+	mRightHandPos = QVector3D(0, 0, 15);
+	mLeftHandPos = QVector3D(0, 0, 15);
+
 	setDebugLevel(mDebugLevel);
 	connect(&mPhysicsTimer, SIGNAL(timeout()), this, SLOT(timeout()));
 	mPhysicsTimer.start(15);
@@ -183,19 +205,23 @@ void GLWidget::timeout()
 	int elapsed = mPhysicsTime.restart();
 	float coef = float(elapsed) / mPhysicsTimer.interval();
 
-	// set left hand's position
-	btTransform leftTransform;
-	mLeftHandMotionState->getWorldTransform(leftTransform);
-	btVector3 leftOrigin(mLeftHandPos.x(), mLeftHandPos.y(), mLeftHandPos.z());
-	leftTransform.setOrigin(leftOrigin);
-	mLeftHandMotionState->setWorldTransform(leftTransform);
+	if (mLeftCalibration == Regular) {
+		// set left hand's position
+		btTransform leftTransform;
+		mLeftHandMotionState->getWorldTransform(leftTransform);
+		btVector3 leftOrigin(mLeftHandPos.x(), mLeftHandPos.y(), mLeftHandPos.z());
+		leftTransform.setOrigin(leftOrigin);
+		mLeftHandMotionState->setWorldTransform(leftTransform);
+	}
 
-	// set right hand's position
-	btTransform rightTransform;
-	mLeftHandMotionState->getWorldTransform(rightTransform);
-	btVector3 rightOrigin(mRightHandPos.x(), mRightHandPos.y(), mRightHandPos.z());
-	rightTransform.setOrigin(rightOrigin);
-	mLeftHandMotionState->setWorldTransform(rightTransform);
+	if (mRightCalibration == Regular) {
+		// set right hand's position
+		btTransform rightTransform;
+		mRightHandMotionState->getWorldTransform(rightTransform);
+		btVector3 rightOrigin(mRightHandPos.x(), mRightHandPos.y(), mRightHandPos.z());
+		rightTransform.setOrigin(rightOrigin);
+		mRightHandMotionState->setWorldTransform(rightTransform);
+	}
 
 	mDynamicsWorld->stepSimulation((float)elapsed / 1000.f, 5);
 }
@@ -357,9 +383,11 @@ void GLWidget::paintGL()
 
 	glLoadIdentity();
 
-	gluLookAt(0, 60, 80,
+	gluLookAt(0, 30, 40,
 			  0, 0, 0,
 			  0, 1, 0);
+
+	mDynamicsWorld->debugDrawWorld();
 
 	if (mDoDrawStickman) {
 		drawStickman();
@@ -367,14 +395,14 @@ void GLWidget::paintGL()
 
 	if (mDoDrawLeftMarker) {
 		glPushMatrix();
-		glTranslatef(mLeftPos.x(), mLeftPos.y(), mLeftPos.z());
+		glTranslatef(mLeftHandPos.x(), mLeftHandPos.y(), mLeftHandPos.z());
 		gluSphere(mQuadric, 3, 5, 5);
 		glPopMatrix();
 	}
 
 	if (mDoDrawRightMarker) {
 		glPushMatrix();
-		glTranslatef(mRightPos.x(), mRightPos.y(), mRightPos.z());
+		glTranslatef(mRightHandPos.x(), mRightHandPos.y(), mRightHandPos.z());
 		gluSphere(mQuadric, 3, 5, 5);
 		glPopMatrix();
 	}
@@ -420,7 +448,6 @@ void GLWidget::paintGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 
-	mDynamicsWorld->debugDrawWorld();
 }
 
 void GLWidget::setDebugLevel(int level)
@@ -459,6 +486,7 @@ void GLWidget::moveRight(const QVector3D &pos)
 				}
 
 				QMatrix4x4 m;
+				m.rotate(90, 1, 0, 0);
 				m.rotate(90, 1, 0, 0);
 				m.translate(3, 0, 0);
 				m.rotate(90 - mRightArmLeftRightDegrees, 0, 1, 0);
@@ -518,6 +546,7 @@ void GLWidget::moveLeft(const QVector3D &pos)
 					}
 
 					QMatrix4x4 m;
+					m.rotate(90, 1, 0, 0);
 					m.rotate(-90, 1, 0, 0);
 					m.translate(-3, 0, 0);
 					m.rotate(90, 0, 1, 0);
@@ -778,11 +807,17 @@ void GLWidget::setDebugInterval(int interval)
 void GLWidget::setRightCalibration(Calibration c)
 {
 	mRightCalibration = c;
+	if (c == Regular) {
+		mDynamicsWorld->addRigidBody(mRightHandRigidBody);
+	}
 }
 
 void GLWidget::setLeftCalibration(Calibration c)
 {
 	mLeftCalibration = c;
+	if (c == Regular) {
+		mDynamicsWorld->addRigidBody(mLeftHandRigidBody);
+	}
 }
 
 void GLWidget::rightReset()
