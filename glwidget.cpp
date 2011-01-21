@@ -15,6 +15,8 @@
 #define START_POS_Y -5
 #define START_POS_Z -12
 
+#define HORIZONTAL
+
 inline int fuzzySign(double d)
 {
 	int sign;
@@ -154,6 +156,8 @@ GLWidget::~GLWidget()
 	delete [] blackAmbientLight;
 	delete [] whiteSpecularLight;
 
+	removeBoxes();
+
 	delete mLeftHandRigidBody;
 	delete mLeftHandRigidBodyCI;
 	delete mLeftHandMotionState;
@@ -177,9 +181,8 @@ void GLWidget::setDrawBoxes(bool draw)
 	mDoDrawBoxes = draw;
 }
 
-void GLWidget::resetBoxes()
+void GLWidget::removeBoxes()
 {
-	qDebug() << "reset";
 	for (int i = 0; i < mBoxes.count(); i++) {
 		mDynamicsWorld->removeRigidBody(mBoxes.at(i));
 		delete mBoxes.at(i)->getMotionState();
@@ -187,6 +190,13 @@ void GLWidget::resetBoxes()
 	}
 
 	mBoxes.clear();
+}
+
+void GLWidget::resetBoxes()
+{
+	qDebug() << "reset";
+
+	removeBoxes();
 
 	btTransform startTransform;
 	startTransform.setIdentity();

@@ -56,6 +56,7 @@ public slots:
 
 private:
 	void drawStickman();
+	void removeBoxes();
 	btRigidBody *localCreateRigidBody(float mass, const btTransform& startTransform, btCollisionShape *shape);
 
 	GLfloat *light_ambient, *light_ambient_position, *whiteDiffuseLight,
