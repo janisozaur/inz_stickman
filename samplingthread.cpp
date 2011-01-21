@@ -6,7 +6,7 @@
 
 #include <QDebug>
 
-#ifndef isnan
+#ifndef Q_OS_LINUX
 inline bool isnan(double x) {
 	return x != x;
 }
