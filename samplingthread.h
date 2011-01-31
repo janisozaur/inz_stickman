@@ -2,10 +2,11 @@
  * stickman
  * Copyright (C) 2011 Michał Janiszewski
  *
- * This work is a master thesis. Due to nature of law you are obliged to
- * get a written permission prior to using any part of this work. If you
- * do get a permission, you are able to use the work, which is thereafter
- * licensed using GNU GPL v3 or (at your option) any later.
+ * This work is a thesis. Due to nature of law you are obliged to
+ * get a written permission from Technical University of Lodz prior to
+ * using any part of this work. If you do get a permission, you are able
+ * to use the work, which is thereafter licensed using GNU GPL v3 or
+ * (at your option) any later.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
