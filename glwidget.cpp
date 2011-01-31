@@ -75,7 +75,7 @@ GLWidget::GLWidget(QWidget *parent) :
 	mRotation(0),
 	mRightArmLeftRightDegrees(0),
 	mLeftArmLeftRightDegrees(180),
-	mDoDrawStickman(false),
+	mDoDrawStickman(true),
 	mDoDrawLeftMarker(false),
 	mDoDrawRightMarker(false),
 	mDoDrawBoxes(true),
