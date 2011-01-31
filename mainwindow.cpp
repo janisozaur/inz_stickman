@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
 				ui->portBaudRateComboBox->findText("BAUDR_9600"));
 
 #ifdef Q_OS_LINUX
-	ui->portNameLineEdit->setText("/dev/ttyUSB0");
+	ui->portNameLineEdit->setText("/dev/ttyS0");
 #endif
 #ifdef Q_OS_WIN
 	ui->portNameLineEdit->setText("COM1");
